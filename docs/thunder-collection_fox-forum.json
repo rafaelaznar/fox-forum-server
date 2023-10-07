@@ -1,34 +1,87 @@
 {
     "client": "Thunder Client",
     "collectionName": "fox-forum",
-    "dateExported": "2023-10-05T10:10:05.635Z",
+    "dateExported": "2023-10-05T19:28:53.342Z",
     "version": "1.1",
     "folders": [],
     "requests": [
         {
-            "_id": "06ca7e41-ab27-4121-b90e-6a5a71d2e5c1",
-            "colId": "7392a8af-c3d9-46e3-b68e-fd8c21abec16",
+            "_id": "ee9ec2d5-bc15-4bf8-88ee-49e80916fb71",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
             "containerId": "",
-            "name": "http://localhost:8083/user/1",
+            "name": "GetUser",
             "url": "http://localhost:8083/user/1",
             "method": "GET",
             "sortNum": 10000,
-            "created": "2023-10-05T09:12:52.661Z",
-            "modified": "2023-10-05T09:12:52.661Z",
+            "created": "2023-10-05T18:40:46.302Z",
+            "modified": "2023-10-05T18:40:46.302Z",
             "headers": [],
             "params": [],
             "tests": []
         },
         {
-            "_id": "70008fdf-fc7f-435e-b4da-ec141dba5474",
-            "colId": "7392a8af-c3d9-46e3-b68e-fd8c21abec16",
+            "_id": "8dd93f1a-b9c4-4ccd-8602-dee80cbcbff0",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
             "containerId": "",
-            "name": "http://localhost:8083/user",
-            "url": "http://localhost:8083/user?page=1&size=3",
+            "name": "GetThread",
+            "url": "http://localhost:8083/thread/1",
+            "method": "GET",
+            "sortNum": 12500,
+            "created": "2023-10-05T18:44:08.011Z",
+            "modified": "2023-10-05T18:44:20.691Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "0a90469e-5ff8-486f-b96c-a833c5746675",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "GetReply",
+            "url": "http://localhost:8083/reply/1",
+            "method": "GET",
+            "sortNum": 13750,
+            "created": "2023-10-05T18:44:26.258Z",
+            "modified": "2023-10-05T18:44:54.102Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "e15725d9-2c77-4e7a-bd89-3da3cde42c3c",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "GetAllUsers",
+            "url": "http://localhost:8083/user?page=0&size=10",
             "method": "GET",
             "sortNum": 15000,
-            "created": "2023-10-05T09:47:41.092Z",
-            "modified": "2023-10-05T09:57:29.539Z",
+            "created": "2023-10-05T18:40:46.307Z",
+            "modified": "2023-10-05T19:21:35.033Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "page",
+                    "value": "0",
+                    "isPath": false
+                },
+                {
+                    "name": "size",
+                    "value": "10",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "358150ff-230b-4000-947b-7d94015e1fe3",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "GetAllThreads",
+            "url": "http://localhost:8083/thread?page=1&size=3",
+            "method": "GET",
+            "sortNum": 17500,
+            "created": "2023-10-05T18:45:10.547Z",
+            "modified": "2023-10-05T18:45:30.053Z",
             "headers": [],
             "params": [
                 {
@@ -45,15 +98,40 @@
             "tests": []
         },
         {
-            "_id": "f2dd177f-633b-4b46-8e2b-903138e3341c",
-            "colId": "7392a8af-c3d9-46e3-b68e-fd8c21abec16",
+            "_id": "666a0095-b3e0-4a09-bf5e-369105b121a2",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
             "containerId": "",
-            "name": "http://localhost:8083/user",
+            "name": "GetAllReplies",
+            "url": "http://localhost:8083/reply?page=1&size=3",
+            "method": "GET",
+            "sortNum": 18750,
+            "created": "2023-10-05T18:45:38.138Z",
+            "modified": "2023-10-05T18:46:00.443Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "page",
+                    "value": "1",
+                    "isPath": false
+                },
+                {
+                    "name": "size",
+                    "value": "3",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "dd13c8c1-acb9-4d5a-a9aa-c7f7fbbe766a",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "InsertUser",
             "url": "http://localhost:8083/user",
             "method": "POST",
             "sortNum": 20000,
-            "created": "2023-10-05T09:13:05.823Z",
-            "modified": "2023-10-05T09:59:49.457Z",
+            "created": "2023-10-05T18:40:46.303Z",
+            "modified": "2023-10-05T18:40:46.303Z",
             "headers": [],
             "params": [],
             "body": {
@@ -64,50 +142,140 @@
             "tests": []
         },
         {
-            "_id": "cc1e0fa7-08e9-4527-aac3-62364220b9e4",
-            "colId": "7392a8af-c3d9-46e3-b68e-fd8c21abec16",
+            "_id": "98358f7f-1165-4781-b1af-d3c4110166a4",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
             "containerId": "",
-            "name": "http://localhost:8083/user/populate/1378",
-            "url": "http://localhost:8083/user/populate/1378",
+            "name": "InsertThread",
+            "url": "http://localhost:8083/thread",
             "method": "POST",
-            "sortNum": 25000,
-            "created": "2023-10-05T09:43:02.660Z",
-            "modified": "2023-10-05T09:47:00.720Z",
-            "headers": [],
-            "params": [],
-            "tests": []
-        },
-        {
-            "_id": "26524c06-6c02-4589-9e6b-c7c897894e34",
-            "colId": "7392a8af-c3d9-46e3-b68e-fd8c21abec16",
-            "containerId": "",
-            "name": "http://localhost:8083/user",
-            "url": "http://localhost:8083/user/",
-            "method": "PUT",
-            "sortNum": 30000,
-            "created": "2023-10-05T09:30:16.547Z",
-            "modified": "2023-10-05T09:31:16.377Z",
+            "sortNum": 22500,
+            "created": "2023-10-05T18:46:27.043Z",
+            "modified": "2023-10-05T18:49:55.370Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"id\": 2,\n  \"name\": \"Pepe\",\n  \"surname\": \"Potamo\",\n  \"lastname\": \"Sánchez\",\n  \"email\": \"ppotamo@ausiasmarch.net\",\n  \"username\": \"pepepot\",\n  \"role\": false\n}",
+                "raw": "{\n  \"id\": 1,\n  \"title\": \"Prueba\"\n}",
                 "form": []
             },
             "tests": []
         },
         {
-            "_id": "e1a0dcfe-b851-414f-b04d-865736077e33",
-            "colId": "7392a8af-c3d9-46e3-b68e-fd8c21abec16",
+            "_id": "5ed2564b-6542-449d-832c-263c7837878c",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
             "containerId": "",
-            "name": "http://localhost:8083/user/2",
-            "url": "http://localhost:8083/user/2",
-            "method": "DELETE",
-            "sortNum": 40000,
-            "created": "2023-10-05T09:31:36.914Z",
-            "modified": "2023-10-05T09:34:07.648Z",
+            "name": "InsertReply",
+            "url": "http://localhost:8083/reply",
+            "method": "POST",
+            "sortNum": 23750,
+            "created": "2023-10-05T18:50:26.531Z",
+            "modified": "2023-10-05T18:51:12.088Z",
             "headers": [],
             "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": 1,\n  \"title\": \"Prueba\",\n  \"body\": \"Lorem ipsum\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "f0019edd-db72-4bcb-b759-ce41ffef05ae",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "InsertMoreUsers",
+            "url": "http://localhost:8083/user/populate/20",
+            "method": "POST",
+            "sortNum": 25000,
+            "created": "2023-10-05T18:40:46.306Z",
+            "modified": "2023-10-05T19:22:57.738Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "222b3f26-6446-49c9-9433-23026b52bbb8",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "InsertMoreThreads",
+            "url": "http://localhost:8083/thread/populate/13",
+            "method": "POST",
+            "sortNum": 27500,
+            "created": "2023-10-05T18:52:01.978Z",
+            "modified": "2023-10-05T18:52:19.001Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "698b726a-7a0b-4ca7-82d2-4ac5c62837fa",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "InsertMoreReplies",
+            "url": "http://localhost:8083/reply/populate/13",
+            "method": "POST",
+            "sortNum": 28750,
+            "created": "2023-10-05T18:52:21.531Z",
+            "modified": "2023-10-05T18:52:40.203Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "f56f710a-1a45-438f-8eb5-c42e74c08b18",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "UpdateUser",
+            "url": "http://localhost:8083/user",
+            "method": "PUT",
+            "sortNum": 30000,
+            "created": "2023-10-05T18:40:46.304Z",
+            "modified": "2023-10-05T19:23:46.993Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": 1406,\n  \"name\": \"Pepe\",\n  \"surname\": \"Potamo\",\n  \"lastname\": \"Sánchez\",\n  \"email\": \"ppotamo@ausiasmarch.net\",\n  \"username\": \"pepepot\",\n  \"role\": false\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "edb3a1f2-7110-410a-b948-7288a005c5f1",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "UpdateThread",
+            "url": "http://localhost:8083/thread",
+            "method": "PUT",
+            "sortNum": 35000,
+            "created": "2023-10-05T18:52:44.483Z",
+            "modified": "2023-10-05T18:53:12.497Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": 2,\n  \"title\": \"Hola\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "e7e79dba-cc5a-4332-9c93-cb6fb87bd037",
+            "colId": "a596152d-3462-48a8-bf69-3e15a423b9d0",
+            "containerId": "",
+            "name": "UpdateReply",
+            "url": "http://localhost:8083/thread",
+            "method": "PUT",
+            "sortNum": 37500,
+            "created": "2023-10-05T18:57:35.452Z",
+            "modified": "2023-10-05T18:57:35.452Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": 2,\n  \"title\": \"Hola\"\n}",
+                "form": []
+            },
             "tests": []
         }
     ]

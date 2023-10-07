@@ -1,0 +1,51 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "fox-forum2",
+    "dateExported": "2023-10-05T19:29:00.933Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "ca0769d8-863e-4b14-ac26-fb2d501e111e",
+            "colId": "32c3203f-0eb5-4c44-932b-dad0e92aaf31",
+            "containerId": "",
+            "name": "DeleteUser",
+            "url": "http://localhost:8083/user/1406",
+            "method": "DELETE",
+            "sortNum": 10000,
+            "created": "2023-10-05T18:57:36.629Z",
+            "modified": "2023-10-05T19:24:11.460Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "7bf46611-4e5f-443d-bdac-4d8e8961b462",
+            "colId": "32c3203f-0eb5-4c44-932b-dad0e92aaf31",
+            "containerId": "",
+            "name": "DeleteThread",
+            "url": "http://localhost:8083/thread/13",
+            "method": "DELETE",
+            "sortNum": 20000,
+            "created": "2023-10-05T18:57:40.027Z",
+            "modified": "2023-10-05T18:57:58.836Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "87a08bc4-1dcd-48a5-9c58-feb239036b69",
+            "colId": "32c3203f-0eb5-4c44-932b-dad0e92aaf31",
+            "containerId": "",
+            "name": "DeleteReply",
+            "url": "http://localhost:8083/reply/13",
+            "method": "DELETE",
+            "sortNum": 30000,
+            "created": "2023-10-05T18:58:20.731Z",
+            "modified": "2023-10-05T18:58:38.538Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ]
+}
