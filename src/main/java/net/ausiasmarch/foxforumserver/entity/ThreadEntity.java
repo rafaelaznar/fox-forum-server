@@ -1,9 +1,14 @@
 package net.ausiasmarch.foxforumserver.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,6 +19,14 @@ public class ThreadEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
     private String title;
+
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private UserEntity user;
+
+    @OneToMany(mappedBy = "thread", fetch = jakarta.persistence.FetchType.LAZY)
+    private List<ReplyEntity> replies;
+
 
     public ThreadEntity() {
     }
@@ -41,6 +54,18 @@ public class ThreadEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public int getReplies() {
+        return replies.size();
     }
     
 }

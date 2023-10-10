@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,6 +18,14 @@ public class ReplyEntity {
     
     String title;
     String body;
+
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "id_thread")
+    private ThreadEntity thread;
 
     public ReplyEntity() {
     }
@@ -48,5 +58,23 @@ public class ReplyEntity {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public ThreadEntity getThread() {
+        return thread;
+    }
+
+    public void setThread(ThreadEntity thread) {
+        this.thread = thread;
+    }
+
+    
     
 }
