@@ -19,21 +19,19 @@ public class UserService {
         return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    public UserEntity create(UserEntity oUserEntity) {
+    public Long create(UserEntity oUserEntity) {
         oUserEntity.setId(null);
         oUserEntity.setPassword("e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e");
-        return oUserRepository.save(oUserEntity);
+        return oUserRepository.save(oUserEntity).getId();
     }
 
     public UserEntity update(UserEntity oUserEntity) {
         return oUserRepository.save(oUserEntity);
     }
 
-    public UserEntity delete(Long id) {
-        UserEntity oUserEntityAux = oUserRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public Long delete(Long id) {
         oUserRepository.deleteById(id);
-        return oUserEntityAux;
+        return id;
     }
 
     public Page<UserEntity> getPage(Pageable oPageable) {

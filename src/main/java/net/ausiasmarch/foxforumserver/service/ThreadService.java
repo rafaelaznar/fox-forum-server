@@ -18,20 +18,18 @@ public class ThreadService {
         return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
     }
 
-    public ThreadEntity create(ThreadEntity oThreadEntity) {
+    public Long create(ThreadEntity oThreadEntity) {
         oThreadEntity.setId(null);
-        return oThreadRepository.save(oThreadEntity);
+        return oThreadRepository.save(oThreadEntity).getId();
     }
 
     public ThreadEntity update(ThreadEntity oThreadEntity) {
         return oThreadRepository.save(oThreadEntity);
     }
 
-    public ThreadEntity delete(Long id) {
-        ThreadEntity oThreadEntityAux = oThreadRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
-        oThreadRepository.deleteById(id);
-        return oThreadEntityAux;
+    public Long delete(Long id) {
+        oThreadRepository.deleteById(id);        
+        return id;
     }
 
     public Page<ThreadEntity> getPage(Pageable oPageable) {

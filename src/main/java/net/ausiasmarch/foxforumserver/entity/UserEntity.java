@@ -1,5 +1,6 @@
 package net.ausiasmarch.foxforumserver.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,6 +36,8 @@ public class UserEntity {
     private List<ReplyEntity> replies;
 
     public UserEntity() {
+        threads = new ArrayList<>();
+        replies = new ArrayList<>();
     }
 
     public UserEntity(Long id, String name, String surname, String lastname, String email, String username,

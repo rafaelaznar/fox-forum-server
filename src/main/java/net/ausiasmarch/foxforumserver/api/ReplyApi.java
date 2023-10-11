@@ -28,7 +28,7 @@ public class ReplyApi {
     }
 
     @PostMapping("")
-    public ResponseEntity<ReplyEntity> create(@RequestBody ReplyEntity oReplyEntity) {
+    public ResponseEntity<Long> create(@RequestBody ReplyEntity oReplyEntity) {
         return ResponseEntity.ok(oReplyService.create(oReplyEntity));
     }
 
@@ -38,7 +38,7 @@ public class ReplyApi {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ReplyEntity> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Long> delete(@PathVariable("id") Long id) {
         return ResponseEntity.ok(oReplyService.delete(id));
     }
 

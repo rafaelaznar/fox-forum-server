@@ -19,20 +19,18 @@ public class ReplyService {
         return oReplyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
     }
 
-    public ReplyEntity create(ReplyEntity oReplyEntity) {
+    public Long create(ReplyEntity oReplyEntity) {
         oReplyEntity.setId(null);
-        return oReplyRepository.save(oReplyEntity);
+        return oReplyRepository.save(oReplyEntity).getId();
     }
 
     public ReplyEntity update(ReplyEntity oReplyEntity) {
         return oReplyRepository.save(oReplyEntity);
     }
 
-    public ReplyEntity delete(Long id) {
-        ReplyEntity oReplyEntityaux = oReplyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
-        oReplyRepository.deleteById(id);
-        return oReplyEntityaux;
+    public Long delete(Long id) {
+        oReplyRepository.deleteById(id);        
+        return id;
     }
 
     public Page<ReplyEntity> getPage(Pageable oPageable) {

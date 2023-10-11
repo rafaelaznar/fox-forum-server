@@ -29,7 +29,7 @@ public class UserApi {
     }
 
     @PostMapping("")
-    public ResponseEntity<UserEntity> create(@RequestBody UserEntity oUserEntity) {
+    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {
         return ResponseEntity.ok(oUserService.create(oUserEntity));
     }
 
@@ -39,7 +39,7 @@ public class UserApi {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserEntity> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Long> delete(@PathVariable("id") Long id) {
         return ResponseEntity.ok(oUserService.delete(id));
     }
 

@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 public class ThreadEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
 
@@ -27,8 +27,8 @@ public class ThreadEntity {
     @OneToMany(mappedBy = "thread", fetch = jakarta.persistence.FetchType.LAZY)
     private List<ReplyEntity> replies;
 
-
     public ThreadEntity() {
+        replies = new java.util.ArrayList<>();
     }
 
     public ThreadEntity(Long id, String title) {
@@ -67,5 +67,5 @@ public class ThreadEntity {
     public int getReplies() {
         return replies.size();
     }
-    
+
 }

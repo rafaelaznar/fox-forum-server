@@ -28,7 +28,7 @@ public class ThreadApi {
     }
 
     @PostMapping("")
-    public ResponseEntity<ThreadEntity> create(@RequestBody ThreadEntity oThreadEntity) {
+    public ResponseEntity<Long> create(@RequestBody ThreadEntity oThreadEntity) {
         return ResponseEntity.ok(oThreadService.create(oThreadEntity));
     }
 
@@ -38,7 +38,7 @@ public class ThreadApi {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ThreadEntity> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Long> delete(@PathVariable("id") Long id) {
         return ResponseEntity.ok(oThreadService.delete(id));
     }
 
