@@ -16,7 +16,7 @@ public class ReplyService {
     ReplyRepository oReplyRepository;
 
     public ReplyEntity get(Long id) {
-        return oReplyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
+        return oReplyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
     }
 
     public Long create(ReplyEntity oReplyEntity) {
