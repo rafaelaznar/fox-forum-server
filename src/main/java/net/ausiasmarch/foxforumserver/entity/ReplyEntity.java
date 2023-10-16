@@ -7,6 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "reply")
@@ -16,7 +19,12 @@ public class ReplyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
     
+    @NotNull
+    @NotBlank
+    @Size(max=2048)
     String title;
+    @NotNull
+    @NotBlank
     String body;
 
     @ManyToOne
