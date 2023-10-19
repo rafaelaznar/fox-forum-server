@@ -40,7 +40,7 @@ public class UserService {
 
     public Long populate(Integer amount) {
         for (int i = 0; i < amount; i++) {
-            oUserRepository.save(new UserEntity("name" + i, "surname" + i, "lastname" + i, "email" + i, "username" + i,
+            oUserRepository.save(new UserEntity("name" + i, "surname" + i, "lastname" + i, "email" + i + "@ausiasmarch.net", "username" + i,
                     "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true));
         }
         return oUserRepository.count();

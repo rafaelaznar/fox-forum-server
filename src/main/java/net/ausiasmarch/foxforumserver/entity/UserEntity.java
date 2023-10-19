@@ -46,7 +46,7 @@ public class UserEntity {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @NotBlank
-    @Size(min=256, max=256)
+    @Size(min=64, max=64)
     @Pattern(regexp = "^[a-fA-F0-9]+$", message = "Password must be hexadecimal")
     private String password = "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e";        
     private Boolean role = false;
