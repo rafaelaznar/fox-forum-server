@@ -1,5 +1,7 @@
 package net.ausiasmarch.foxforumserver.helper;
 
+import java.text.Normalizer;
+
 public class DataGenerationHelper {
 
     private static final String[] aNames = { "Mónica", "José Antonio", "Laura", "Lucas", "Eva", "Eloy", "Jesús", "Alan",
@@ -19,4 +21,15 @@ public class DataGenerationHelper {
     public static String getRadomSurname() {
         return aSurnames[(int) (Math.random() * aSurnames.length)];
     }
+
+    public static String doNormalizeString(String cadena) {
+        String original = "áàäéèëíìïóòöúùuñÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑçÇ";
+        String ascii = "aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC";
+        String cadenaSinAcentos = cadena;
+        for (int i = 0; i < original.length(); i++) {
+            cadenaSinAcentos = cadenaSinAcentos.replace(original.charAt(i), ascii.charAt(i));
+        }
+        return cadenaSinAcentos;
+    }
+
 }

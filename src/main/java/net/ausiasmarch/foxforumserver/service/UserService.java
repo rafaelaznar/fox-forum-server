@@ -46,7 +46,7 @@ public class UserService {
             String lastname = DataGenerationHelper.getRadomSurname();
             String email = name.substring(0, 3) + surname.substring(0, 3) + lastname.substring(0, 2) + i
                     + "@ausiasmarch.net";
-            String username = name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i;
+            String username = DataGenerationHelper.doNormalizeString(name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i);
             oUserRepository.save(new UserEntity(name, surname, lastname, email, username,
                     "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true));
         }
