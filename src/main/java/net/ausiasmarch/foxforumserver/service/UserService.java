@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
+import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.repository.UserRepository;
 
 @Service
@@ -40,7 +41,13 @@ public class UserService {
 
     public Long populate(Integer amount) {
         for (int i = 0; i < amount; i++) {
-            oUserRepository.save(new UserEntity("name" + i, "surname" + i, "lastname" + i, "email" + i + "@ausiasmarch.net", "username" + i,
+            String name = DataGenerationHelper.getRadomName();
+            String surname = DataGenerationHelper.getRadomSurname();
+            String lastname = DataGenerationHelper.getRadomSurname();
+            String email = name.substring(0, 3) + surname.substring(0, 3) + lastname.substring(0, 2) + i
+                    + "@ausiasmarch.net";
+            String username = name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i;
+            oUserRepository.save(new UserEntity(name, surname, lastname, email, username,
                     "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true));
         }
         return oUserRepository.count();
