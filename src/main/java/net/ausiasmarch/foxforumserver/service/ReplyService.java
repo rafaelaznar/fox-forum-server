@@ -1,5 +1,6 @@
 package net.ausiasmarch.foxforumserver.service;
 
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.foxforumserver.entity.ReplyEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
+import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.repository.ReplyRepository;
 
 @Service
@@ -29,7 +31,7 @@ public class ReplyService {
     }
 
     public Long delete(Long id) {
-        oReplyRepository.deleteById(id);        
+        oReplyRepository.deleteById(id);
         return id;
     }
 
@@ -37,9 +39,17 @@ public class ReplyService {
         return oReplyRepository.findAll(oPageable);
     }
 
+    @Autowired
+    ThreadService oThreadService;
+
+    @Autowired
+    UserService oUserService;
+
     public Long populate(Integer amount) {
         for (int i = 0; i < amount; i++) {
-            oReplyRepository.save(new ReplyEntity("title" + i, "body" + i));
+            oReplyRepository.save(new ReplyEntity(DataGenerationHelper.getSpeech(1),
+                    DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)),
+                    oUserService.getOneRandom(), oThreadService.getOneRandom()));
         }
         return oReplyRepository.count();
     }

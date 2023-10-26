@@ -2,11 +2,14 @@ package net.ausiasmarch.foxforumserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
+import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
+import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.repository.ThreadRepository;
 
 @Service
@@ -28,7 +31,7 @@ public class ThreadService {
     }
 
     public Long delete(Long id) {
-        oThreadRepository.deleteById(id);        
+        oThreadRepository.deleteById(id);
         return id;
     }
 
@@ -36,9 +39,17 @@ public class ThreadService {
         return oThreadRepository.findAll(oPageable);
     }
 
+    public ThreadEntity getOneRandom() {
+        Pageable oPageable = PageRequest.of((int) (Math.random() * oThreadRepository.count()), 1);
+        return oThreadRepository.findAll(oPageable).getContent().get(0);
+    }
+
+    @Autowired
+    UserService oUserService;
+
     public Long populate(Integer amount) {
         for (int i = 0; i < amount; i++) {
-            oThreadRepository.save(new ThreadEntity("title" + i));
+            oThreadRepository.save(new ThreadEntity(DataGenerationHelper.getSpeech(1), oUserService.getOneRandom()));
         }
         return oThreadRepository.count();
     }

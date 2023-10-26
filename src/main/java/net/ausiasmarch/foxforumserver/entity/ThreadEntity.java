@@ -47,6 +47,11 @@ public class ThreadEntity {
         this.title = title;
     }
 
+    public ThreadEntity(String title, UserEntity user) {
+        this.title = title;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }
