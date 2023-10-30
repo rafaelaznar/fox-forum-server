@@ -39,7 +39,8 @@ public class UserService {
         return id;
     }
 
-    public Page<UserEntity> getPage(Pageable oPageable) {
+    public Page<UserEntity> getPage(Pageable oPageable, Integer id_user) {
+        //pte de filtrar
         return oUserRepository.findAll(oPageable);
     }
 
