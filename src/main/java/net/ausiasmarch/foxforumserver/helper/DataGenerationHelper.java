@@ -15,12 +15,6 @@ public class DataGenerationHelper {
             "Serrano", "Quilez", "Aznar", "Aparici"
     };
 
-    private static final String[] aTextConnector = {
-            "but", "and", "or", "so", "because", "although", "even though", "despite", "in spite of", "however",
-            "nevertheless", "nonetheless", "on the other hand", "on the contrary", "yet", "still", "instead",
-            "otherwise", "conversely",
-    };
-
     public static String getRadomName() {
         return aNames[(int) (Math.random() * aNames.length)];
     }
@@ -44,14 +38,8 @@ public class DataGenerationHelper {
     // Define arrays for different word categories
     private static String[] articles = { "the", "a", "one" };
     private static String[] nouns = { "cat", "dog", "book", "birds", "sun", "sandwich", "friend", "car", "house"};
-    private static String[] verbs = { "sleeps", "barks", "reads", "fly", "shines", "run", "ate", "is" };
-    private static String[] adjectives = { "loud", "quick", "bright", "slow", "soft", "beautifull", "big", "small" };
+    private static String[] verbs = { "sleeps", "barks", "reads", "fly", "shines", "run", "ate", "is" };    
     private static String[] adverbs = { "loudly", "quickly", "brightly", "slowly", "softly" };
-    private static String[] prepositions = { "in", "on", "under", "with", "at", "from", "into", "during", "including",
-            "until", "against", "among", "throughout", "despite", "towards", "upon", "concerning", "of", "to", "in",
-            "for", "on", "by", "about", "like", "through", "over", "before", "between", "after", "since", "without",
-            "under", "within", "along", "following", "across", "behind", "beyond", "plus", "except", "but", "up", "out",
-            "around", "down", "off", "above", "near" };
     private static String[] conjunctions = { "and", "but", "or" };
     private static String[] subordinatingConjunctions = { "although", "because", "while", "if", "when", "as", "after",
             "before", "since", "until", "unless", "where", "wherever", "whether", "while", "even if", "even though",
