@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
 import net.ausiasmarch.foxforumserver.service.ThreadService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/thread")
 public class ThreadApi {
