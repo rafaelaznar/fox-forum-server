@@ -35,9 +35,14 @@ public class ReplyService {
         return id;
     }
 
-    public Page<ReplyEntity> getPage(Pageable oPageable, Long userId) {
+    public Page<ReplyEntity> getPage(Pageable oPageable, Long userId, Long threadId) {
         if (userId == 0) {
-            return oReplyRepository.findAll(oPageable);
+            if (threadId == 0) {
+                return oReplyRepository.findAll(oPageable);
+            } else {
+                return oReplyRepository.findByThreadId(threadId, oPageable);
+                
+            }            
         } else {
             return oReplyRepository.findByUserId(userId, oPageable);
         }

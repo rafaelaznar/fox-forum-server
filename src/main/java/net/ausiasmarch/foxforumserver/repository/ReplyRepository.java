@@ -7,4 +7,6 @@ import net.ausiasmarch.foxforumserver.entity.ReplyEntity;
 
 public interface ReplyRepository extends JpaRepository<ReplyEntity, Long> {
     Page<ReplyEntity> findByUserId(Long id, Pageable pageable);
+
+    Page<ReplyEntity> findByThreadId(Long id, Pageable pageable);
 }

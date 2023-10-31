@@ -47,8 +47,9 @@ public class ReplyApi {
 
     @GetMapping("")
     public ResponseEntity<Page<ReplyEntity>> getPage(Pageable oPageable,
-            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId) {
-        return ResponseEntity.ok(oReplyService.getPage(oPageable, userId));
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId,
+            @RequestParam(value = "thread", defaultValue = "0", required = false) Long threadId) {
+        return ResponseEntity.ok(oReplyService.getPage(oPageable, userId, threadId));
     }
 
     @PostMapping("/populate/{amount}")
