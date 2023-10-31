@@ -47,8 +47,8 @@ public class ThreadApi {
 
     @GetMapping("")
     public ResponseEntity<Page<ThreadEntity>> getPage(Pageable oPageable,
-            @RequestParam(value = "id_user", defaultValue = "null", required = false) Long id_user) {
-        return ResponseEntity.ok(oThreadService.getPage(oPageable, id_user));
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId) {
+        return ResponseEntity.ok(oThreadService.getPage(oPageable, userId));
     }
 
     @PostMapping("/populate/{amount}")

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.ausiasmarch.foxforumserver.entity.ReplyEntity;
@@ -45,8 +46,9 @@ public class ReplyApi {
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<ReplyEntity>> getPage(Pageable oPageable) {
-        return ResponseEntity.ok(oReplyService.getPage(oPageable));
+    public ResponseEntity<Page<ReplyEntity>> getPage(Pageable oPageable,
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId) {
+        return ResponseEntity.ok(oReplyService.getPage(oPageable, userId));
     }
 
     @PostMapping("/populate/{amount}")

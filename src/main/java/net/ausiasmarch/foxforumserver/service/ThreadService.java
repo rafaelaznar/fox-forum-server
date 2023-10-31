@@ -33,8 +33,12 @@ public class ThreadService {
         return id;
     }
 
-    public Page<ThreadEntity> getPage(Pageable oPageable, Long id_user) {
-        return oThreadRepository.findByUserId(id_user,oPageable);
+    public Page<ThreadEntity> getPage(Pageable oPageable, Long userId) {
+        if (userId == 0) {
+            return oThreadRepository.findAll(oPageable);
+        } else {
+            return oThreadRepository.findByUserId(userId, oPageable);
+        }        
     }
 
     public ThreadEntity getOneRandom() {
