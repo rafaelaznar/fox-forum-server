@@ -5,9 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
-import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
 import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.repository.ThreadRepository;
@@ -35,8 +33,8 @@ public class ThreadService {
         return id;
     }
 
-    public Page<ThreadEntity> getPage(Pageable oPageable) {
-        return oThreadRepository.findAll(oPageable);
+    public Page<ThreadEntity> getPage(Pageable oPageable, Long id_user) {
+        return oThreadRepository.findByUserId(id_user,oPageable);
     }
 
     public ThreadEntity getOneRandom() {

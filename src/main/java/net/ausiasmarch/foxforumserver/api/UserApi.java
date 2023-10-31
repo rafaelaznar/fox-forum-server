@@ -47,10 +47,8 @@ public class UserApi {
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<UserEntity>> getPage(
-            Pageable oPageable,
-            @RequestParam(value = "id_user", defaultValue = "", required = false) Integer id_user) {
-        return ResponseEntity.ok(oUserService.getPage(oPageable,id_user));
+    public ResponseEntity<Page<UserEntity>> getPage(Pageable oPageable) {
+        return ResponseEntity.ok(oUserService.getPage(oPageable));
     }
 
     @PostMapping("/populate/{amount}")

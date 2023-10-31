@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
@@ -45,8 +46,9 @@ public class ThreadApi {
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<ThreadEntity>> getPage(Pageable oPageable) {
-        return ResponseEntity.ok(oThreadService.getPage(oPageable));
+    public ResponseEntity<Page<ThreadEntity>> getPage(Pageable oPageable,
+            @RequestParam(value = "id_user", defaultValue = "null", required = false) Long id_user) {
+        return ResponseEntity.ok(oThreadService.getPage(oPageable, id_user));
     }
 
     @PostMapping("/populate/{amount}")
