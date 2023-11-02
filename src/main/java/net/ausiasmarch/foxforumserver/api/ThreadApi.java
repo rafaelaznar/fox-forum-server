@@ -55,4 +55,10 @@ public class ThreadApi {
     public ResponseEntity<Long> populate(@PathVariable("amount") Integer amount) {
         return ResponseEntity.ok(oThreadService.populate(amount));
     }
+
+    @DeleteMapping("/empty")
+    public ResponseEntity<Long> empty() {
+        return ResponseEntity.ok(oThreadService.empty());
+    }
+
 }

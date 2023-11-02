@@ -56,4 +56,9 @@ public class UserApi {
         return ResponseEntity.ok(oUserService.populate(amount));
     }
 
+    @DeleteMapping("/empty")
+    public ResponseEntity<Long> empty() {
+        return ResponseEntity.ok(oUserService.empty());
+    }
+
 }

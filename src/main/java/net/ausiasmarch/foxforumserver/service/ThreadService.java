@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
@@ -106,6 +108,21 @@ public class ThreadService {
     public ThreadEntity getOneRandom() {
         Pageable oPageable = PageRequest.of((int) (Math.random() * oThreadRepository.count()), 1);
         return oThreadRepository.findAll(oPageable).getContent().get(0);
+    }
+
+    @Transactional
+    public Long empty() {
+        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
+        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+            oThreadRepository.deleteAll();
+            oThreadRepository.resetAutoIncrement();
+            oThreadRepository.flush();
+            return oThreadRepository.count();
+        } else {
+            throw new ResourceNotFoundException("Unauthorized");
+        }
     }
 
 }

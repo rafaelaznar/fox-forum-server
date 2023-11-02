@@ -56,4 +56,9 @@ public class ReplyApi {
     public ResponseEntity<Long> populate(@PathVariable("amount") Integer amount) {
         return ResponseEntity.ok(oReplyService.populate(amount));
     }
+
+    @DeleteMapping("/empty")
+    public ResponseEntity<Long> empty() {
+        return ResponseEntity.ok(oReplyService.empty());
+    }
 }

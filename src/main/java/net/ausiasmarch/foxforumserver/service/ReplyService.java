@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.entity.ReplyEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
@@ -112,6 +114,21 @@ public class ReplyService {
         } else {
             throw new ResourceNotFoundException("Unauthorized");
         }
-
     }
+
+    @Transactional
+    public Long empty() {
+        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
+        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+            oReplyRepository.deleteAll();
+            oReplyRepository.resetAutoIncrement();
+            oReplyRepository.flush();
+            return oReplyRepository.count();
+        } else {
+            throw new ResourceNotFoundException("Unauthorized");
+        }
+    }
+
 }
