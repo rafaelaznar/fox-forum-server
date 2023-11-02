@@ -78,23 +78,24 @@ public class UserService {
 
     @Transactional
     public Long empty() {
-        // String strJWTusername =
-        // oHttpServletRequest.getAttribute("username").toString();
-        // UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
-        // .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        // if (Boolean.TRUE.equals(oUserEntity.getRole())) {
-        oUserRepository.deleteAll();
-        oUserRepository.resetAutoIncrement();        
-        UserEntity oUserEntity1 = new UserEntity(1L, "Pedro", "Picapiedra", "Roca", "pedropicapiedra@ausiasmarch.net",
-                "pedropicapiedra", "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", false);
-        oUserRepository.save(oUserEntity1);
-        oUserEntity1 = new UserEntity(2L, "Pablo", "Mármol", "Granito", "pablomarmol@ausiasmarch.net", "pablomarmol",
-                "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true);
-        oUserRepository.save(oUserEntity1);
-        return oUserRepository.count();
-        // } else {
-        // throw new ResourceNotFoundException("Unauthorized");
-        // }
+        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
+        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+            oUserRepository.deleteAll();
+            oUserRepository.resetAutoIncrement();
+            UserEntity oUserEntity1 = new UserEntity(1L, "Pedro", "Picapiedra", "Roca",
+                    "pedropicapiedra@ausiasmarch.net",
+                    "pedropicapiedra", "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", false);
+            oUserRepository.save(oUserEntity1);
+            oUserEntity1 = new UserEntity(2L, "Pablo", "Mármol", "Granito", "pablomarmol@ausiasmarch.net",
+                    "pablomarmol",
+                    "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true);
+            oUserRepository.save(oUserEntity1);
+            return oUserRepository.count();
+        } else {
+            throw new ResourceNotFoundException("Unauthorized");
+        }
     }
 
 }
