@@ -2,7 +2,8 @@ package net.ausiasmarch.foxforumserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import net.ausiasmarch.bean.UserBean;
+
+import net.ausiasmarch.foxforumserver.bean.UserBean;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
 import net.ausiasmarch.foxforumserver.helper.JWTHelper;
 import net.ausiasmarch.foxforumserver.repository.UserRepository;

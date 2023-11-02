@@ -1,4 +1,4 @@
-package net.ausiasmarch.bean;
+package net.ausiasmarch.foxforumserver.bean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
