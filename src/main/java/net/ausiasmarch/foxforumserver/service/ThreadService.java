@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
@@ -44,12 +43,12 @@ public class ThreadService {
     public Long create(ThreadEntity oThreadEntity) {
         oThreadEntity.setId(null);
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
+            oThreadEntity.setUser(oUserEntityInSession);
             return oThreadRepository.save(oThreadEntity).getId();
         } else {
-            oThreadEntity.setUser(oUserEntity);
             return oThreadRepository.save(oThreadEntity).getId();
         }
     }
@@ -58,16 +57,16 @@ public class ThreadService {
         oThreadEntity = oThreadRepository.findById(oThreadEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
-            return oThreadRepository.save(oThreadEntity);
-        } else {
-            if (oThreadEntity.getUser().getId().equals(oUserEntity.getId())) {
+        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
+            if (oThreadEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
                 return oThreadRepository.save(oThreadEntity);
             } else {
                 throw new ResourceNotFoundException("Unauthorized");
             }
+        } else {
+            return oThreadRepository.save(oThreadEntity);
         }
     }
 
@@ -75,26 +74,26 @@ public class ThreadService {
         ThreadEntity oThreadEntity = oThreadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
-            oThreadRepository.deleteById(id);
-            return id;
-        } else {
-            if (oThreadEntity.getUser().getId().equals(oUserEntity.getId())) {
+        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
+            if (oThreadEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
                 oThreadRepository.deleteById(id);
                 return id;
             } else {
                 throw new ResourceNotFoundException("Unauthorized");
             }
+        } else {
+            oThreadRepository.deleteById(id);
+            return id;
         }
     }
 
     public Long populate(Integer amount) {
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
             for (int i = 0; i < amount; i++) {
                 oThreadRepository
                         .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), oUserService.getOneRandom()));
@@ -113,9 +112,9 @@ public class ThreadService {
     @Transactional
     public Long empty() {
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
             oThreadRepository.deleteAll();
             oThreadRepository.resetAutoIncrement();
             oThreadRepository.flush();

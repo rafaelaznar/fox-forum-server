@@ -2,14 +2,11 @@ package net.ausiasmarch.foxforumserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.servlet.http.HttpServletRequest;
-import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
 import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
@@ -33,18 +30,41 @@ public class UserService {
     }
 
     public Long create(UserEntity oUserEntity) {
-        oUserEntity.setId(null);
-        oUserEntity.setPassword("e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e");
-        return oUserRepository.save(oUserEntity).getId();
+        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
+            oUserEntity.setId(null);
+            oUserEntity.setPassword("e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e");
+            return oUserRepository.save(oUserEntity).getId();
+        } else {
+            throw new ResourceNotFoundException("Unauthorized");
+        }
     }
 
     public UserEntity update(UserEntity oUserEntity) {
-        return oUserRepository.save(oUserEntity);
+        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
+            oUserEntity.setId(null);
+            oUserEntity.setPassword("e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e");
+            return oUserRepository.save(oUserEntity);
+        } else {
+            throw new ResourceNotFoundException("Unauthorized");
+        }
     }
 
     public Long delete(Long id) {
-        oUserRepository.deleteById(id);
-        return id;
+        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
+            oUserRepository.deleteById(id);
+            return id;
+        } else {
+            throw new ResourceNotFoundException("Unauthorized");
+        }
     }
 
     public UserEntity getOneRandom() {
@@ -56,7 +76,7 @@ public class UserService {
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
         UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.FALSE.equals(oUserEntity.getRole())) {
             for (int i = 0; i < amount; i++) {
                 String name = DataGenerationHelper.getRadomName();
                 String surname = DataGenerationHelper.getRadomSurname();
@@ -81,7 +101,7 @@ public class UserService {
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
         UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.FALSE.equals(oUserEntity.getRole())) {
             oUserRepository.deleteAll();
             oUserRepository.resetAutoIncrement();
             UserEntity oUserEntity1 = new UserEntity(1L, "Pedro", "Picapiedra", "Roca",

@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.entity.ReplyEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
@@ -42,42 +41,39 @@ public class ReplyService {
                 return oReplyRepository.findAll(oPageable);
             } else {
                 return oReplyRepository.findByThreadId(threadId, oPageable);
-
             }
         } else {
             return oReplyRepository.findByUserId(userId, oPageable);
         }
-
     }
 
     public Long create(ReplyEntity oReplyEntity) {
         oReplyEntity.setId(null);
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
+            oReplyEntity.setUser(oUserEntityInSession);
             return oReplyRepository.save(oReplyEntity).getId();
         } else {
-            oReplyEntity.setUser(oUserEntity);
             return oReplyRepository.save(oReplyEntity).getId();
         }
-
     }
 
     public ReplyEntity update(ReplyEntity oReplyEntity) {
         oReplyEntity = oReplyRepository.findById(oReplyEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
-            return oReplyRepository.save(oReplyEntity);
-        } else {
-            if (oReplyEntity.getUser().getId().equals(oUserEntity.getId())) {
+        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
+            if (oReplyEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
                 return oReplyRepository.save(oReplyEntity);
             } else {
                 throw new ResourceNotFoundException("Unauthorized");
             }
+        } else {
+            return oReplyRepository.save(oReplyEntity);
         }
     }
 
@@ -85,26 +81,26 @@ public class ReplyService {
         ReplyEntity oReplyEntity = oReplyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
-            oReplyRepository.deleteById(id);
-            return id;
-        } else {
-            if (oReplyEntity.getUser().getId().equals(oUserEntity.getId())) {
+        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
+            if (oReplyEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
                 oReplyRepository.deleteById(id);
                 return id;
             } else {
                 throw new ResourceNotFoundException("Unauthorized");
             }
+        } else {
+            oReplyRepository.deleteById(id);
+            return id;
         }
     }
 
     public Long populate(Integer amount) {
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
             for (int i = 0; i < amount; i++) {
                 oReplyRepository.save(new ReplyEntity(DataGenerationHelper.getSpeech(1),
                         DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)),
@@ -119,9 +115,9 @@ public class ReplyService {
     @Transactional
     public Long empty() {
         String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntity = oUserRepository.findByUsername(strJWTusername)
+        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntity.getRole())) {
+        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
             oReplyRepository.deleteAll();
             oReplyRepository.resetAutoIncrement();
             oReplyRepository.flush();
