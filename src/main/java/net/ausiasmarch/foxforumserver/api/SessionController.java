@@ -21,7 +21,7 @@ public class SessionController {
 
     @PostMapping()
     public ResponseEntity<String> login(@RequestBody UserBean oUserBean) {
-        return ResponseEntity.ok(oSessionService.login(oUserBean));
+        return ResponseEntity.ok("\"" + oSessionService.login(oUserBean) + "\"");
     }
 
 }
