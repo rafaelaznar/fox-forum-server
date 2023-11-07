@@ -9,7 +9,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import net.ausiasmarch.foxforumserver.exception.JWTException;
 
 public class JWTHelper {
 

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.bean.UserBean;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
+import net.ausiasmarch.foxforumserver.exception.UnauthorizedException;
 import net.ausiasmarch.foxforumserver.helper.JWTHelper;
 import net.ausiasmarch.foxforumserver.repository.UserRepository;
 
@@ -70,28 +71,28 @@ public class SessionService {
 
     public void onlyAdmins() {
         if (!this.isAdmin()) {
-            throw new ResourceNotFoundException("Only admins can do this");
+            throw new UnauthorizedException("Only admins can do this");
         }
     }
 
     public void onlyUsers() {
         if (!this.isUser()) {
-            throw new ResourceNotFoundException("Only users can do this");
+            throw new UnauthorizedException("Only users can do this");
         }
     }
 
     public void onlyAdminsOrUsers() {
         if (!this.isSessionActive()) {
-            throw new ResourceNotFoundException("Only admins or users can do this");
+            throw new UnauthorizedException("Only admins or users can do this");
         }
     }
 
     public void onlyUsersWithIisOwnData(Long id_user) {
         if (!this.isUser()) {
-            throw new ResourceNotFoundException("Only users can do this");
+            throw new UnauthorizedException("Only users can do this");
         }
         if (!this.getSessionUser().getId().equals(id_user)) {
-            throw new ResourceNotFoundException("Only users can do this");
+            throw new UnauthorizedException("Only users can do this");
         }
     }
 
@@ -99,15 +100,15 @@ public class SessionService {
         if (this.isSessionActive()) {
             if (!this.isAdmin()) {
                 if (!this.isUser()) {
-                    throw new ResourceNotFoundException("Only admins or users can do this");
+                    throw new UnauthorizedException("Only admins or users can do this");
                 } else {
                     if (!this.getSessionUser().getId().equals(id_user)) {
-                        throw new ResourceNotFoundException("Only admins or users with its own data can do this");
+                        throw new UnauthorizedException("Only admins or users with its own data can do this");
                     }
                 }
             }
         } else {
-            throw new ResourceNotFoundException("Only admins or users can do this");
+            throw new UnauthorizedException("Only admins or users can do this");
         }
     }
 
