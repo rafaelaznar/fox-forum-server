@@ -44,11 +44,13 @@ public class JWTHelper {
         Claims claims = headerClaimsJwt.getBody();
 
         if (claims.getExpiration().before(new Date())) {
-            throw new JWTException("Error validating JWT: token expired");
+            return null;
+            //throw new JWTException("Error validating JWT: token expired");
         }
 
         if (!claims.getIssuer().equals(ISSUER)) {
-            throw new JWTException("Error validating JWT: wrong issuer");
+            return null;
+            //throw new JWTException("Error validating JWT: wrong issuer");
         }
 
         return claims.get("name", String.class);

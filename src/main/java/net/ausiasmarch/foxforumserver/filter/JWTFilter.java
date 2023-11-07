@@ -40,9 +40,11 @@ public class JWTFilter implements Filter {
                 String token = auth.substring(7);
                 try {
                     String username = JWTHelper.validateJWT(token);
-                    request.setAttribute("username", username);
+                    if (username != null) {
+                        request.setAttribute("username", username);
+                    }
                 } catch (Exception e) {
-                    throw new ServletException("Invalid token");
+                    // throw new ServletException("Invalid token");
                 }
             }
             filterChain.doFilter(servletRequest, servletResponse);
