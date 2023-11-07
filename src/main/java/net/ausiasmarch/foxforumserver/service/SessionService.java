@@ -2,7 +2,6 @@ package net.ausiasmarch.foxforumserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.bean.UserBean;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
