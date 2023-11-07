@@ -25,29 +25,48 @@ public class SessionService {
         return JWTHelper.generateJWT(oUserBean.getUsername());
     }
 
+    public String getSessionUsername() {        
+        if (oHttpServletRequest.getAttribute("username") instanceof String) {
+            return oHttpServletRequest.getAttribute("username").toString();
+        } else {
+            return null;
+        }
+    }
+
     public UserEntity getSessionUser() {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        return oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (this.getSessionUsername() != null) {
+            return oUserRepository.findByUsername(this.getSessionUsername()).orElse(null);    
+        } else {
+            return null;
+        }
     }
 
     public Boolean isSessionActive() {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        return oUserRepository.findByUsername(strJWTusername).isPresent();
+        if (this.getSessionUsername() != null) {
+            return oUserRepository.findByUsername(this.getSessionUsername()).isPresent();
+        } else {
+            return false;
+        }
     }
 
     public Boolean isAdmin() {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return Boolean.FALSE.equals(oUserEntityInSession.getRole());
+        if (this.getSessionUsername() != null) {
+            UserEntity oUserEntityInSession = oUserRepository.findByUsername(this.getSessionUsername())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            return Boolean.FALSE.equals(oUserEntityInSession.getRole());
+        } else {
+            return false;
+        }
     }
 
     public Boolean isUser() {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return Boolean.TRUE.equals(oUserEntityInSession.getRole());
+        if (this.getSessionUsername() != null) {
+            UserEntity oUserEntityInSession = oUserRepository.findByUsername(this.getSessionUsername())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            return Boolean.TRUE.equals(oUserEntityInSession.getRole());
+        } else {
+            return false;
+        }
     }
 
     public void onlyAdmins() {

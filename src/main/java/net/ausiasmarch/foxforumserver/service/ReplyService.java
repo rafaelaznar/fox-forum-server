@@ -52,6 +52,7 @@ public class ReplyService {
 
     public Long create(ReplyEntity oReplyEntity) {
         oSessionService.onlyAdminsOrUsers();
+        oReplyEntity.setId(null);        
         if (oSessionService.isUser()) {
             oReplyEntity.setUser(oSessionService.getSessionUser());
             return oReplyRepository.save(oReplyEntity).getId();
@@ -73,51 +74,30 @@ public class ReplyService {
     }
 
     public Long delete(Long id) {
-        ReplyEntity oReplyEntity = oReplyRepository.findById(id)
+        ReplyEntity oReplyEntityFromDatabase = oReplyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
-            if (oReplyEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
-                oReplyRepository.deleteById(id);
-                return id;
-            } else {
-                throw new ResourceNotFoundException("Unauthorized");
-            }
-        } else {
-            oReplyRepository.deleteById(id);
-            return id;
-        }
+        oSessionService.onlyAdminsOrUsersWithIisOwnData(oReplyEntityFromDatabase.getUser().getId());
+        oReplyRepository.deleteById(id);
+        return id;
     }
 
     public Long populate(Integer amount) {
-        UserEntity oSessionUserEntity = oSessionService.getSessionUser();
-        if (Boolean.FALSE.equals(oSessionUserEntity.getRole())) {
-            for (int i = 0; i < amount; i++) {
-                oReplyRepository.save(new ReplyEntity(DataGenerationHelper.getSpeech(1),
-                        DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)),
-                        oUserService.getOneRandom(), oThreadService.getOneRandom()));
-            }
-            return oReplyRepository.count();
-        } else {
-            throw new ResourceNotFoundException("Unauthorized");
+        oSessionService.onlyAdmins();
+        for (int i = 0; i < amount; i++) {
+            oReplyRepository.save(new ReplyEntity(DataGenerationHelper.getSpeech(1),
+                    DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)),
+                    oUserService.getOneRandom(), oThreadService.getOneRandom()));
         }
+        return oReplyRepository.count();
     }
 
     @Transactional
     public Long empty() {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
-            oReplyRepository.deleteAll();
-            oReplyRepository.resetAutoIncrement();
-            oReplyRepository.flush();
-            return oReplyRepository.count();
-        } else {
-            throw new ResourceNotFoundException("Unauthorized");
-        }
+        oSessionService.onlyAdmins();
+        oReplyRepository.deleteAll();
+        oReplyRepository.resetAutoIncrement();
+        oReplyRepository.flush();
+        return oReplyRepository.count();
     }
 
 }

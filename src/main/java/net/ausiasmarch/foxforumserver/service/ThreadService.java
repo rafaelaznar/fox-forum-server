@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
-import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
 import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.repository.ThreadRepository;
@@ -28,6 +27,9 @@ public class ThreadService {
     @Autowired
     UserService oUserService;
 
+    @Autowired
+    SessionService oSessionService;
+
     public ThreadEntity get(Long id) {
         return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
     }
@@ -42,86 +44,61 @@ public class ThreadService {
 
     public Long create(ThreadEntity oThreadEntity) {
         oThreadEntity.setId(null);
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
-            oThreadEntity.setUser(oUserEntityInSession);
+        oSessionService.onlyAdminsOrUsers();
+        if (oSessionService.isUser()) {
+            oThreadEntity.setUser(oSessionService.getSessionUser());
             return oThreadRepository.save(oThreadEntity).getId();
         } else {
             return oThreadRepository.save(oThreadEntity).getId();
         }
     }
 
-    public ThreadEntity update(ThreadEntity oThreadEntity) {
-        oThreadEntity = oThreadRepository.findById(oThreadEntity.getId())
+    public ThreadEntity update(ThreadEntity oThreadEntityToSet) {
+        ThreadEntity oThreadEntityFromDatabase = oThreadRepository.findById(oThreadEntityToSet.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
-            if (oThreadEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
-                return oThreadRepository.save(oThreadEntity);
+        oSessionService.onlyAdminsOrUsersWithIisOwnData(oThreadEntityFromDatabase.getUser().getId());
+
+        if (oSessionService.isUser()) {
+            if (oThreadEntityToSet.getUser().getId().equals(oSessionService.getSessionUser().getId())) {
+                return oThreadRepository.save(oThreadEntityToSet);
             } else {
                 throw new ResourceNotFoundException("Unauthorized");
             }
         } else {
-            return oThreadRepository.save(oThreadEntity);
+            return oThreadRepository.save(oThreadEntityToSet);
         }
     }
 
     public Long delete(Long id) {
-        ThreadEntity oThreadEntity = oThreadRepository.findById(id)
+        ThreadEntity oThreadEntityFromDatabase = oThreadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.TRUE.equals(oUserEntityInSession.getRole())) {
-            if (oThreadEntity.getUser().getId().equals(oUserEntityInSession.getId())) {
-                oThreadRepository.deleteById(id);
-                return id;
-            } else {
-                throw new ResourceNotFoundException("Unauthorized");
-            }
-        } else {
-            oThreadRepository.deleteById(id);
-            return id;
-        }
+        oSessionService.onlyAdminsOrUsersWithIisOwnData(oThreadEntityFromDatabase.getUser().getId());
+        oThreadRepository.deleteById(id);
+        return id;
     }
 
     public Long populate(Integer amount) {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
-            for (int i = 0; i < amount; i++) {
-                oThreadRepository
-                        .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), oUserService.getOneRandom()));
-            }
-            return oThreadRepository.count();
-        } else {
-            throw new ResourceNotFoundException("Unauthorized");
+        oSessionService.onlyAdmins();
+        for (int i = 0; i < amount; i++) {
+            oThreadRepository
+                    .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), oUserService.getOneRandom()));
         }
+        return oThreadRepository.count();
     }
 
     public ThreadEntity getOneRandom() {
+        oSessionService.onlyAdmins();
         Pageable oPageable = PageRequest.of((int) (Math.random() * oThreadRepository.count()), 1);
         return oThreadRepository.findAll(oPageable).getContent().get(0);
     }
 
     @Transactional
     public Long empty() {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
-            oThreadRepository.deleteAll();
-            oThreadRepository.resetAutoIncrement();
-            oThreadRepository.flush();
-            return oThreadRepository.count();
-        } else {
-            throw new ResourceNotFoundException("Unauthorized");
-        }
+        oSessionService.onlyAdmins();
+        oThreadRepository.deleteAll();
+        oThreadRepository.resetAutoIncrement();
+        oThreadRepository.flush();
+        return oThreadRepository.count();
     }
 
 }
