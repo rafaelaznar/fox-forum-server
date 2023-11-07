@@ -30,25 +30,18 @@ public class JWTFilter implements Filter {
 
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
-            filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String auth = request.getHeader("Authorization");
 
-            if (auth == null || !auth.startsWith("Bearer ")) {
-                // THERE IS NO TOKEN
-            } else {
+            if (auth != null && auth.startsWith("Bearer ")) {
                 String token = auth.substring(7);
-                try {
-                    String username = JWTHelper.validateJWT(token);
-                    if (username != null) {
-                        request.setAttribute("username", username);
-                    }
-                } catch (Exception e) {
-                    // throw new ServletException("Invalid token");
+                String username = JWTHelper.validateJWT(token);
+                if (username != null) {
+                    request.setAttribute("username", username);
                 }
             }
-            filterChain.doFilter(servletRequest, servletResponse);
         }
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
