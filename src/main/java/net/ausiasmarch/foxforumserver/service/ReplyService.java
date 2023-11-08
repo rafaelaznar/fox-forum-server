@@ -61,8 +61,7 @@ public class ReplyService {
     }
 
     public ReplyEntity update(ReplyEntity oReplyEntityToSet) {
-        ReplyEntity oReplyEntityFromDatabase = oReplyRepository.findById(oReplyEntityToSet.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
+        ReplyEntity oReplyEntityFromDatabase = this.get(oReplyEntityToSet.getId());
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oReplyEntityFromDatabase.getUser().getId());
         if (oSessionService.isUser()) {
             oReplyEntityToSet.setUser(oSessionService.getSessionUser());
@@ -73,8 +72,7 @@ public class ReplyService {
     }
 
     public Long delete(Long id) {
-        ReplyEntity oReplyEntityFromDatabase = oReplyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
+        ReplyEntity oReplyEntityFromDatabase = this.get(id);
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oReplyEntityFromDatabase.getUser().getId());
         oReplyRepository.deleteById(id);
         return id;

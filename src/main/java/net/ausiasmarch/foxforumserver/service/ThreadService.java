@@ -54,10 +54,8 @@ public class ThreadService {
     }
 
     public ThreadEntity update(ThreadEntity oThreadEntityToSet) {
-        ThreadEntity oThreadEntityFromDatabase = oThreadRepository.findById(oThreadEntityToSet.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
+        ThreadEntity oThreadEntityFromDatabase = this.get(oThreadEntityToSet.getId());
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oThreadEntityFromDatabase.getUser().getId());
-
         if (oSessionService.isUser()) {
             if (oThreadEntityToSet.getUser().getId().equals(oSessionService.getSessionUser().getId())) {
                 return oThreadRepository.save(oThreadEntityToSet);
@@ -70,8 +68,7 @@ public class ThreadService {
     }
 
     public Long delete(Long id) {
-        ThreadEntity oThreadEntityFromDatabase = oThreadRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
+        ThreadEntity oThreadEntityFromDatabase = this.get(id);
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oThreadEntityFromDatabase.getUser().getId());
         oThreadRepository.deleteById(id);
         return id;
