@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
+import net.ausiasmarch.foxforumserver.exception.UnauthorizedException;
 import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.repository.UserRepository;
 
@@ -58,15 +59,9 @@ public class UserService {
     }
 
     public Long delete(Long id) {
-        String strJWTusername = oHttpServletRequest.getAttribute("username").toString();
-        UserEntity oUserEntityInSession = oUserRepository.findByUsername(strJWTusername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (Boolean.FALSE.equals(oUserEntityInSession.getRole())) {
-            oUserRepository.deleteById(id);
-            return id;
-        } else {
-            throw new ResourceNotFoundException("Unauthorized");
-        }
+        oSessionService.onlyAdmins();
+        oUserRepository.deleteById(id);
+        return id;
     }
 
     public UserEntity getOneRandom() {
