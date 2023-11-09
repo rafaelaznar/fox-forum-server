@@ -42,6 +42,15 @@ public class ThreadService {
         }
     }
 
+    public Page<ThreadEntity> getPageByRepliesNumberDesc(Pageable oPageable, Long userId) {
+        if (userId == 0) {
+            return oThreadRepository.findThreadsByRepliesNumberDesc(oPageable);
+        } else {
+            return oThreadRepository.findThreadsByRepliesNumberDescFilterByUserId(userId, oPageable);
+        }
+    }
+
+
     public Long create(ThreadEntity oThreadEntity) {
         oThreadEntity.setId(null);
         oSessionService.onlyAdminsOrUsers();

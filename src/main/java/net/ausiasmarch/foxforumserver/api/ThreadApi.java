@@ -61,4 +61,10 @@ public class ThreadApi {
         return ResponseEntity.ok(oThreadService.empty());
     }
 
+    @GetMapping("/byRepliesNumberDesc")
+    public ResponseEntity<Page<ThreadEntity>> getPageByRepliesNumberDesc(Pageable oPageable,
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId) {
+        return ResponseEntity.ok(oThreadService.getPageByRepliesNumberDesc(oPageable, userId));
+    }
+
 }
