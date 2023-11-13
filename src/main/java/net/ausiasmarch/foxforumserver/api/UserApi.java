@@ -29,9 +29,9 @@ public class UserApi {
         return ResponseEntity.ok(oUserService.get(id));
     }
 
-    @GetMapping("/getIdByUsername/{username}")
+    @GetMapping("/byUsername/{username}")
     public ResponseEntity<UserEntity> get(@PathVariable("username") String username) {
-        return ResponseEntity.ok(oUserService.getIdByUsername(username));
+        return ResponseEntity.ok(oUserService.getByUsername(username));
     }
 
 

@@ -30,7 +30,7 @@ public class UserService {
         return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    public UserEntity getIdByUsername(String username) {
+    public UserEntity getByUsername(String username) {
         return oUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by username"));
     }
