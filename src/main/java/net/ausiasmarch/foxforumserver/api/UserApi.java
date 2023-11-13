@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.service.UserService;
 
@@ -59,6 +60,11 @@ public class UserApi {
     @DeleteMapping("/empty")
     public ResponseEntity<Long> empty() {
         return ResponseEntity.ok(oUserService.empty());
+    }
+
+    @GetMapping("/byRepliesNumberDesc")
+    public ResponseEntity<Page<UserEntity>> getPageByRepliesNumberDesc(Pageable oPageable) {
+        return ResponseEntity.ok(oUserService.getPageByRepliesNumberDesc(oPageable));
     }
 
 }
