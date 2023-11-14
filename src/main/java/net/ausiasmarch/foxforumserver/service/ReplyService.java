@@ -51,7 +51,7 @@ public class ReplyService {
 
     public Long create(ReplyEntity oReplyEntity) {
         oSessionService.onlyAdminsOrUsers();
-        oReplyEntity.setId(null);        
+        oReplyEntity.setId(null);
         if (oSessionService.isUser()) {
             oReplyEntity.setUser(oSessionService.getSessionUser());
             return oReplyRepository.save(oReplyEntity).getId();
@@ -83,6 +83,7 @@ public class ReplyService {
         for (int i = 0; i < amount; i++) {
             oReplyRepository.save(new ReplyEntity(DataGenerationHelper.getSpeech(1),
                     DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)),
+                    DataGenerationHelper.getRadomDate(),
                     oUserService.getOneRandom(), oThreadService.getOneRandom()));
         }
         return oReplyRepository.count();

@@ -31,6 +31,7 @@ CREATE TABLE `reply` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `body` text CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
+  `creation` datetime DEFAULT NULL,
   `id_user` bigint NOT NULL DEFAULT '1',
   `id_thread` bigint NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;

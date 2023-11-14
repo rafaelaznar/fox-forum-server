@@ -1,5 +1,9 @@
 package net.ausiasmarch.foxforumserver.entity;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,10 +27,13 @@ public class ReplyEntity {
     @NotBlank
     @Size(max = 2048)
     String title;
-    
+
     @NotNull
     @NotBlank
     String body;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime creation;
 
     @ManyToOne
     @JoinColumn(name = "id_user")
@@ -42,17 +49,20 @@ public class ReplyEntity {
     public ReplyEntity(String title, String body) {
         this.title = title;
         this.body = body;
+        this.creation = LocalDateTime.now();
     }
 
     public ReplyEntity(Long id, String title, String body) {
         this.id = id;
         this.title = title;
         this.body = body;
+        this.creation = LocalDateTime.now();
     }
 
-    public ReplyEntity(String title, String body, UserEntity user, ThreadEntity thread) {
+    public ReplyEntity(String title, String body, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
         this.title = title;
         this.body = body;
+        this.creation = creation;
         this.user = user;
         this.thread = thread;
     }
