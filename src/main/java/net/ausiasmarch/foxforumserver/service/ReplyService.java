@@ -56,6 +56,9 @@ public class ReplyService {
             oReplyEntity.setUser(oSessionService.getSessionUser());
             return oReplyRepository.save(oReplyEntity).getId();
         } else {
+            if (oReplyEntity.getUser().getId() == null || oReplyEntity.getUser().getId() == 0) {
+                oReplyEntity.setUser(oSessionService.getSessionUser());
+            }
             return oReplyRepository.save(oReplyEntity).getId();
         }
     }
