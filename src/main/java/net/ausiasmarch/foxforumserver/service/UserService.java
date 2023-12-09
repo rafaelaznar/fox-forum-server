@@ -1,13 +1,12 @@
 package net.ausiasmarch.foxforumserver.service;
 
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,8 +37,9 @@ public class UserService {
             oSessionService.onlyAdmins();
             return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         } else {
-            return oUserRepository.findByActiveTrue(id).orElseThrow(() -> new ResourceNotFoundException("User not enabled"));
-        }        
+            return oUserRepository.findByActiveTrue(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not enabled"));
+        }
     }
 
     public UserEntity getByUsername(String username) {
@@ -52,14 +52,14 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by email"));
     }
 
-     public UserEntity getByTokenPassword(String tokenPassword) {
+    public UserEntity getByTokenPassword(String tokenPassword) {
         return oUserRepository.findByTokenPassword(tokenPassword)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by token"));
     }
 
     public Page<UserEntity> getPage(Pageable pageable, String filter) {
         oSessionService.onlyAdmins();
-        
+
         Page<UserEntity> page;
 
         if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
@@ -83,14 +83,19 @@ public class UserService {
         }
     }
 
+    public Page<UserEntity> getPage(Pageable oPageable) {
+        oSessionService.onlyAdmins();
+        return oUserRepository.findAll(oPageable);
+    }
+
     public Long create(UserEntity oUserEntity) {
         oSessionService.onlyAdmins();
         oUserEntity.setId(null);
         oUserEntity.setPassword(foxforumPASSWORD);
-        oUserEntity.setToken(UUID.randomUUID().toString()); // genero el token    
+        oUserEntity.setToken(UUID.randomUUID().toString()); // genero el token
         oUserRepository.save(oUserEntity);
         this.sendEmail(oUserEntity); // envio el email
-        return oUserEntity.getId();        
+        return oUserEntity.getId();
     }
 
     public Long createForUsers(UserEntity oUserEntity) {
@@ -128,6 +133,7 @@ public class UserService {
         oUser.setPassword(password);
         oUserRepository.save(oUser);
         return ResponseEntity.ok("Email verified successfully!");
+        // return oUserRepository.save(oUserEntity).getId();
     }
 
     public UserEntity update(UserEntity oUserEntityToSet) {
@@ -139,8 +145,14 @@ public class UserService {
             oUserEntityToSet.setPassword(foxforumPASSWORD);
             return oUserRepository.save(oUserEntityToSet);
         } else {
-            oUserEntityToSet.setPassword(foxforumPASSWORD);
-            return oUserRepository.save(oUserEntityToSet);
+            if (oSessionService.isUser()) {
+                oUserEntityToSet.setRole(oUserEntityFromDatabase.getRole());
+                oUserEntityToSet.setPassword(foxforumPASSWORD);
+                return oUserRepository.save(oUserEntityToSet);
+            } else {
+                oUserEntityToSet.setPassword(foxforumPASSWORD);
+                return oUserRepository.save(oUserEntityToSet);
+            }
         }
     }
 
@@ -149,7 +161,7 @@ public class UserService {
         oUserRepository.deleteById(id);
         return id;
     }
-   
+
     public UserEntity getOneRandom() {
         oSessionService.onlyAdmins();
         Pageable oPageable = PageRequest.of((int) (Math.random() * oUserRepository.count()), 1);
@@ -168,13 +180,12 @@ public class UserService {
                     .doNormalizeString(
                             name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i)
                     .toLowerCase();
-            oUserRepository.save(new UserEntity(name, surname, lastname, email, username,
-                    "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true, true));
+            // Aquí usamos el constructor correcto con todos los argumentos necesarios
+            oUserRepository.save(new UserEntity(null, name, surname, lastname, email, username,
+                    "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true, true, true, null));
         }
         return oUserRepository.count();
     }
-
-
 
     @Transactional
     public Long empty() {
@@ -184,6 +195,7 @@ public class UserService {
         UserEntity oUserEntity1 = new UserEntity(1L, "Pedro", "Picapiedra", "Roca",
                 "pedropicapiedra@ausiasmarch.net", "pedropicapiedra", foxforumPASSWORD, false, true);
         oUserRepository.save(oUserEntity1);
+
         oUserEntity1 = new UserEntity(2L, "Pablo", "Mármol", "Granito", "pablomarmol@ausiasmarch.net",
                 "pablomarmol", foxforumPASSWORD, true, true);
         oUserRepository.save(oUserEntity1);

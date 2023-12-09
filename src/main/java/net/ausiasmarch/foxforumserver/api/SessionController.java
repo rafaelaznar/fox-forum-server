@@ -32,7 +32,7 @@ public class SessionController {
         return ResponseEntity.ok(oSessionService.prelogin());
     }
 
-    @PostMapping("/loginCaptcha") 
+    @PostMapping("/loginCaptcha")
     public ResponseEntity<String> loginCaptcha(@RequestBody CaptchaBean oCaptchaBean) {
         return ResponseEntity.ok("\"" + oSessionService.loginCaptcha(oCaptchaBean) + "\"");
     }

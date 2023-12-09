@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,6 @@ public class ReplyService {
                 if (strFilter == null || strFilter.isEmpty()) {
                     return oReplyRepository.findAll(oPageable);
                 } else {
-
                     return oReplyRepository.findByTitleOrBodyContainingIgnoreCase(strFilter, oPageable);
                 }
             } else {
@@ -63,6 +63,18 @@ public class ReplyService {
                 } else {
                     return oReplyRepository.findAllByThreadIdActiveTrue(threadId, oPageable);
                 }
+            }
+        } else {
+            return oReplyRepository.findByUserId(userId, oPageable);
+        }
+    }
+
+    public Page<ReplyEntity> getPage(Pageable oPageable, Long userId, Long threadId) {
+        if (userId == 0) {
+            if (threadId == 0) {
+                return oReplyRepository.findAll(oPageable);
+            } else {
+                return oReplyRepository.findByThreadId(threadId, oPageable);
             }
         } else {
             return oReplyRepository.findByUserId(userId, oPageable);
@@ -134,4 +146,11 @@ public class ReplyService {
     private String getMonthName(int month) {
         return Month.of(month).toString();
     }
+
+    public ReplyEntity getOneRandom() {
+        oSessionService.onlyAdmins();
+        Pageable oPageable = PageRequest.of((int) (Math.random() * oReplyRepository.count()), 1);
+        return oReplyRepository.findAll(oPageable).getContent().get(0);
+    }
+
 }

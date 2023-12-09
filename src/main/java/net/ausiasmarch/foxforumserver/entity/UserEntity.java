@@ -27,36 +27,36 @@ public class UserEntity {
 
     @NotNull
     @NotBlank
-    @Size(min=3, max=255)
+    @Size(min = 3, max = 255)
     private String name;
     @NotNull
     @NotBlank
-    @Size(min=3, max=255)
-    private String surname;    
-    @Size(max=255)
+    @Size(min = 3, max = 255)
+    private String surname;
+    @Size(max = 255)
     private String lastname;
     @Email
     private String email;
     @NotNull
     @NotBlank
-    @Size(min=6, max=15)
+    @Size(min = 6, max = 15)
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username must be alphanumeric")
     private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @NotBlank
-    @Size(min=64, max=64)
+    @Size(min = 64, max = 64)
     @Pattern(regexp = "^[a-fA-F0-9]+$", message = "Password must be hexadecimal")
-    private String password = "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e";        
+    private String password = "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e";
     private String tokenPassword;
-
-    private Boolean role = false;
 
     private Boolean active = true;
 
     private boolean verified;
 
     private String token;
+
+    private Boolean role = false;
 
     @OneToMany(mappedBy = "user", fetch = jakarta.persistence.FetchType.LAZY)
     private List<ThreadEntity> threads;
@@ -67,6 +67,21 @@ public class UserEntity {
     public UserEntity() {
         threads = new ArrayList<>();
         replies = new ArrayList<>();
+    }
+
+    public UserEntity(Long id, String name, String surname, String lastname, String email, String username,
+            String password, Boolean role, Boolean active, boolean verified, String token) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.lastname = lastname;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.active = active;
+        this.verified = verified;
+        this.token = token;
     }
 
     public UserEntity(Long id, String name, String surname, String lastname, String email, String username,
@@ -84,6 +99,10 @@ public class UserEntity {
 
     public UserEntity(String name, String surname, String lastname, String email, String username, String password,
             Boolean role, Boolean active) {
+    }
+
+    public UserEntity(String name, String surname, String lastname, String email, String username, String password,
+            Boolean role, Boolean active, boolean verified, String token) {
         this.name = name;
         this.surname = surname;
         this.lastname = lastname;
@@ -92,8 +111,8 @@ public class UserEntity {
         this.password = password;
         this.role = role;
         this.active = active;
-    }
 
+    }
 
     public UserEntity(String username, String password) {
         this.username = username;
@@ -180,7 +199,7 @@ public class UserEntity {
         this.active = active;
     }
 
-     public boolean isVerified() {
+    public boolean isVerified() {
         return verified;
     }
 
@@ -194,6 +213,14 @@ public class UserEntity {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public int getThreads() {

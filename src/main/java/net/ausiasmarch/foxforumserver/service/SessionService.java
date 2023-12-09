@@ -40,15 +40,21 @@ public class SessionService {
     @Autowired
     CaptchaRepository oCaptchaRepository;
 
-    public String login(UserBean oUserBean) {
-        String strUsername = oUserBean.getUsername();
+    // public String login(UserBean oUserBean) {
+    //     String strUsername = oUserBean.getUsername();
 
-        oUserRepository.findByUsernameAndPassword(strUsername,oUserBean.getPassword())
-                .orElseThrow(() -> new ResourceNotFoundException("Wrong User"));
+    //     oUserRepository.findByUsernameAndPassword(strUsername,oUserBean.getPassword())
+    //             .orElseThrow(() -> new ResourceNotFoundException("Wrong User"));
+    //     return JWTHelper.generateJWT(oUserBean.getUsername());
+    // }
+
+    public String login(UserBean oUserBean) {
+        oUserRepository.findByUsernameAndPassword(oUserBean.getUsername(), oUserBean.getPassword())
+                .orElseThrow(() -> new ResourceNotFoundException("Wrong User or password"));
         return JWTHelper.generateJWT(oUserBean.getUsername());
     }
 
-    public String getSessionUsername() {        
+    public String getSessionUsername() {
         if (oHttpServletRequest.getAttribute("username") instanceof String) {
             return oHttpServletRequest.getAttribute("username").toString();
         } else {

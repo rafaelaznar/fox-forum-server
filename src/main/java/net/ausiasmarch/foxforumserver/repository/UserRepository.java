@@ -19,27 +19,27 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
   @Query("SELECT u FROM UserEntity u WHERE u.active")
   Page<UserEntity> findAllByActiveTrue(Pageable pageable);
 
+  @Query(value = "SELECT u.*, COUNT(r.id) FROM user u LEFT JOIN reply r ON u.id = r.id_user WHERE u.active = true GROUP BY u.id ORDER BY COUNT(u.id) DESC", nativeQuery = true)
+  Page<UserEntity> findUsersByRepliesNumberDescFilterActiveTrue(Pageable pageable);
+
+  @Query(value = "SELECT * FROM user WHERE length(?1) >= 3 AND (name LIKE %?1% OR surname LIKE %?1% OR lastname LIKE %?1% OR username LIKE %?1% OR email LIKE %?1%)", nativeQuery = true)
+  Page<UserEntity> findByUserByNameOrSurnameOrLastnameContainingIgnoreCase(String searchText,
+      String filter, String filter2, String filter3, Pageable pageable);
+
   Optional<UserEntity> findByUsername(String username);
 
-  Page<UserEntity> findByNameContaining(String name, Pageable pageable);
-
   Optional<UserEntity> findByUsernameAndPassword(String username, String password);
+
+  @Query(value = "SELECT u.*,count(r.id) FROM user u, reply r WHERE u.id = r.id_user GROUP BY u.id ORDER BY COUNT(u.id) desc", nativeQuery = true)
+  Page<UserEntity> findUsersByRepliesNumberDescFilter(Pageable pageable);
+
+  Page<UserEntity> findByNameContaining(String name, Pageable pageable);
 
   Optional<UserEntity> findByToken(String token);
 
   Optional<UserEntity> findByTokenPassword(String tokenPassword);
 
   Optional<UserEntity> findByEmail(String email);
-
-  @Query(value = "SELECT u.*,count(r.id) FROM user u, reply r WHERE u.id = r.id_user GROUP BY u.id ORDER BY COUNT(u.id) desc", nativeQuery = true)
-  Page<UserEntity> findUsersByRepliesNumberDescFilter(Pageable pageable);
-
-  @Query(value = "SELECT u.*, COUNT(r.id) FROM user u LEFT JOIN reply r ON u.id = r.id_user WHERE u.active = true GROUP BY u.id ORDER BY COUNT(u.id) DESC", nativeQuery = true)
-    Page<UserEntity> findUsersByRepliesNumberDescFilterActiveTrue(Pageable pageable);
-
-  @Query(value = "SELECT * FROM user WHERE length(?1) >= 3 AND (name LIKE %?1% OR surname LIKE %?1% OR lastname LIKE %?1% OR username LIKE %?1% OR email LIKE %?1%)", nativeQuery = true)
-  Page<UserEntity> findByUserByNameOrSurnameOrLastnameContainingIgnoreCase(String searchText,
-      String filter, String filter2, String filter3, Pageable pageable);
 
   @Modifying
   @Query(value = "ALTER TABLE user AUTO_INCREMENT = 1", nativeQuery = true)

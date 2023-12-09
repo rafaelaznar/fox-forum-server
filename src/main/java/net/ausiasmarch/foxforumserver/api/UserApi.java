@@ -37,12 +37,12 @@ public class UserApi {
     }
 
     @PostMapping("")
-    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {        
+    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {
         return ResponseEntity.ok(oUserService.create(oUserEntity));
     }
 
     @PostMapping("/forusers")
-    public ResponseEntity<Long> createForUsers(@RequestBody UserEntity oUserEntity) {      
+    public ResponseEntity<Long> createForUsers(@RequestBody UserEntity oUserEntity) {
         return ResponseEntity.ok(oUserService.createForUsers(oUserEntity));
     }
 

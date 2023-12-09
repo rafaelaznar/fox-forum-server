@@ -63,10 +63,29 @@ public class ReplyEntity {
         this.creation = LocalDateTime.now();
     }
 
-    public ReplyEntity(String title, String body, Boolean active, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
+    public ReplyEntity(String title, String body, Boolean active, LocalDateTime creation, UserEntity user,
+            ThreadEntity thread) {
         this.title = title;
         this.body = body;
         this.active = active;
+    }
+
+    public ReplyEntity(String title, String body) {
+        this.title = title;
+        this.body = body;
+        this.creation = LocalDateTime.now();
+    }
+
+    public ReplyEntity(Long id, String title, String body) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.creation = LocalDateTime.now();
+    }
+
+    public ReplyEntity(String title, String body, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
+        this.title = title;
+        this.body = body;
         this.creation = creation;
         this.user = user;
         this.thread = thread;
@@ -119,12 +138,14 @@ public class ReplyEntity {
     public void setThread(ThreadEntity thread) {
         this.thread = thread;
     }
-    //Added by paula
+
+    // Added by paula
     public LocalDateTime getCreation() {
         return creation;
     }
-    
+
     public void setCreation(LocalDateTime creation) {
         this.creation = creation;
     }
+
 }
