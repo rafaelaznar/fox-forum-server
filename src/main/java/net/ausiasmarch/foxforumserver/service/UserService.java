@@ -35,6 +35,11 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by username"));
     }
 
+    public UserEntity getByUsernameOrEmail(String usernameOrEmail) {
+        return oUserRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
     public Page<UserEntity> getPage(Pageable oPageable) {
         oSessionService.onlyAdmins();
         return oUserRepository.findAll(oPageable);

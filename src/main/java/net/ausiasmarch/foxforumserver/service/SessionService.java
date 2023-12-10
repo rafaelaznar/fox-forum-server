@@ -20,7 +20,9 @@ public class SessionService {
     HttpServletRequest oHttpServletRequest;
 
     public String login(UserBean oUserBean) {
-        oUserRepository.findByUsernameAndPassword(oUserBean.getUsername(), oUserBean.getPassword())
+        String strUsernameOrEmail = oUserBean.getUsername();
+
+        oUserRepository.findByUsernameOrEmailAndPassword(strUsernameOrEmail, strUsernameOrEmail,oUserBean.getPassword())
                 .orElseThrow(() -> new ResourceNotFoundException("Wrong User or password"));
         return JWTHelper.generateJWT(oUserBean.getUsername());
     }

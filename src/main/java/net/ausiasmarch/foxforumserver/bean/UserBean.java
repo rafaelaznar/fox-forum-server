@@ -8,6 +8,10 @@ public class UserBean {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private String email;
+
+    private String tokenPassword;
+
     public String getUsername() {
         return username;
     }
@@ -22,6 +26,22 @@ public class UserBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail(){
+        return email;
+    }
+
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    public String getTokenPassword() {
+        return tokenPassword;
+    }
+
+    public void setTokenPassword(String tokenPassword) {
+        this.tokenPassword = tokenPassword;
     }
 
 }
