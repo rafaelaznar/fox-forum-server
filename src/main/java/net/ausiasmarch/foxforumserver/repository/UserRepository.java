@@ -15,6 +15,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByUsernameAndPassword(String username, String password);
 
+    Optional<UserEntity> findByToken(String token);
+
+    Optional<UserEntity> findByEmail(String email);
+
     @Query(value = "SELECT u.*,count(r.id) FROM user u, reply r WHERE u.id = r.id_user GROUP BY u.id ORDER BY COUNT(u.id) desc", nativeQuery = true)
     Page<UserEntity> findUsersByRepliesNumberDescFilter(Pageable pageable);
 

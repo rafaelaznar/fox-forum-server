@@ -2,6 +2,8 @@ package net.ausiasmarch.foxforumserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class UserService {
     @Autowired
     SessionService oSessionService;
 
+    @Autowired
+    EmailService oEmailService;
+
     public UserEntity get(Long id) {
         return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
@@ -49,6 +54,32 @@ public class UserService {
         oUserEntity.setId(null);
         oUserEntity.setPassword(foxforumPASSWORD);
         return oUserRepository.save(oUserEntity).getId();
+    }
+
+    /**
+     * Send email to user with token
+     * @param user
+     */
+    public void sendEmail(UserEntity user) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setText("To confirm your account, please click here : "
+                + "http://localhost:8083/user/confirm-account?token=" + user.getToken());
+        oEmailService.sendEmail(mailMessage);
+    }
+
+
+    /*
+     * Confirm email
+     */
+    public ResponseEntity<?> confirmCorreo(String tokenVerificacion) {
+        UserEntity oUser = oUserRepository.findByToken(tokenVerificacion)
+                .orElseThrow(() -> new RuntimeException("Token not found when validatimg token"));
+        oUser.setVerified(true);
+        oUser.setToken(null);
+        oUserRepository.save(oUser);
+        return ResponseEntity.ok("Email verified successfully!");        
     }
 
     public UserEntity update(UserEntity oUserEntityToSet) {

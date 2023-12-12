@@ -27,6 +27,9 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `reply`
 --
 
+create database foxforum;
+use foxforum;
+
 CREATE TABLE `reply` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
