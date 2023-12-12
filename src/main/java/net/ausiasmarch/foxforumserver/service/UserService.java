@@ -69,7 +69,9 @@ public class UserService {
         oUserRepository.deleteById(id);
         return id;
     }
-
+      public Page<UserEntity> getUsersByName(String name, Pageable pageable) {
+        return oUserRepository.findByNameContaining(name, pageable);
+    }
     public UserEntity getOneRandom() {
         oSessionService.onlyAdmins();
         Pageable oPageable = PageRequest.of((int) (Math.random() * oUserRepository.count()), 1);
