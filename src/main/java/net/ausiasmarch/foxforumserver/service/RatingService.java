@@ -144,23 +144,6 @@ public class RatingService {
         }
     }
 
-    public Double calculateAverageRatingForReply(Long replyId) {
-        // Buscar todas las valoraciones asociadas al replyId
-        List<RatingEntity> ratingsForReply = oRatingRepository.findByReplyId(replyId);
-
-        // Verificar si hay valoraciones para evitar la división por cero
-        if (ratingsForReply.isEmpty()) {
-            return 0.0;
-        }
-
-        // Calcular la media de las estrellas
-        double totalStars = 0;
-        for (RatingEntity rating : ratingsForReply) {
-            totalStars += rating.getStars();
-        }
-        return totalStars / ratingsForReply.size();
-    }
-
     public Map<Long, Double> calculateAverageRatingForAllReplies() {
         // Obtén todas las valoraciones
         List<RatingEntity> allRatings = oRatingRepository.findAll();
@@ -182,6 +165,18 @@ public class RatingService {
         });
 
         return averageRatingsByReplyId;
+    }
+
+    public Map<Long, Integer> countRatingsForAllReplies() {
+        // Obtén todas las valoraciones
+        List<RatingEntity> allRatings = oRatingRepository.findAll();
+
+        // Agrupa las valoraciones por id_reply y cuenta la cantidad de votos por grupo
+        Map<Long, Integer> countByReplyId = allRatings.stream()
+                .collect(
+                        Collectors.groupingBy(rating -> rating.getReply().getId(), Collectors.summingInt(rating -> 1)));
+
+        return countByReplyId;
     }
 
 }
