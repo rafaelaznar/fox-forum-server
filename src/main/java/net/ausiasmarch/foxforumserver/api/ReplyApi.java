@@ -44,8 +44,9 @@ public class ReplyApi {
         return ResponseEntity.ok(oReplyService.delete(id));
     }
 
-    @GetMapping("")
-    public ResponseEntity<Page<ReplyEntity>> getPage(Pageable oPageable,
+    @GetMapping("/replies")
+    public ResponseEntity<Page<ReplyEntity>> getReplyPage(
+            Pageable oPageable,
             @RequestParam(value = "user", defaultValue = "0", required = false) Long userId,
             @RequestParam(value = "thread", defaultValue = "0", required = false) Long threadId) {
         return ResponseEntity.ok(oReplyService.getPage(oPageable, userId, threadId));
