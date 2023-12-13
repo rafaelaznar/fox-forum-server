@@ -35,9 +35,18 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by username"));
     }
 
-    public Page<UserEntity> getPage(Pageable oPageable) {
+    public Page<UserEntity> getPage(Pageable pageable, String filter) {
         oSessionService.onlyAdmins();
-        return oUserRepository.findAll(oPageable);
+        
+        Page<UserEntity> page;
+
+        if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
+            page = oUserRepository.findAll(pageable);
+        } else {
+            page = oUserRepository.findByUserByNameOrSurnameOrLastnameContainingIgnoreCase(
+                    filter, filter, filter, filter, pageable);
+        }
+        return page;
     }
 
     public Page<UserEntity> getPageByRepliesNumberDesc(Pageable oPageable) {
@@ -69,9 +78,7 @@ public class UserService {
         oUserRepository.deleteById(id);
         return id;
     }
-      public Page<UserEntity> getUsersByName(String name, Pageable pageable) {
-        return oUserRepository.findByNameContaining(name, pageable);
-    }
+   
     public UserEntity getOneRandom() {
         oSessionService.onlyAdmins();
         Pageable oPageable = PageRequest.of((int) (Math.random() * oUserRepository.count()), 1);
@@ -94,6 +101,8 @@ public class UserService {
         }
         return oUserRepository.count();
     }
+
+
 
     @Transactional
     public Long empty() {

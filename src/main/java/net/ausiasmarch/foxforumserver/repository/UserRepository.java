@@ -17,6 +17,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query(value = "SELECT u.*,count(r.id) FROM user u, reply r WHERE u.id = r.id_user GROUP BY u.id ORDER BY COUNT(u.id) desc", nativeQuery = true)
     Page<UserEntity> findUsersByRepliesNumberDescFilter(Pageable pageable);
+   
+   @Query(value = "SELECT * FROM user WHERE name LIKE %?1% OR surname LIKE %?1% OR lastname LIKE %?1% OR username LIKE %?1% OR email LIKE %?1%", nativeQuery = true)
+    Page<UserEntity> findByUserByNameOrSurnameOrLastnameContainingIgnoreCase(String searchText,
+            String filter, String filter2, String filter3, Pageable pageable);
 
     @Modifying
     @Query(value = "ALTER TABLE user AUTO_INCREMENT = 1", nativeQuery = true)
