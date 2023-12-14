@@ -48,7 +48,7 @@ public class UserApi {
 
     @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> confirmUserAccount(@RequestParam("token")String confirmationToken) {
-        return oUserService.confirmCorreo(confirmationToken);
+        return ResponseEntity.ok(oUserService.confirmCorreo(confirmationToken)) ;
     }
 
     @PutMapping("")
