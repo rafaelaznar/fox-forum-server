@@ -15,7 +15,7 @@ public interface ThreadRepository extends JpaRepository<ThreadEntity, Long> {
 
     @Query(value = "SELECT t.*,count(r.id) FROM thread t, reply r WHERE t.id = r.id_thread and t.id_user=$1 GROUP BY t.id ORDER BY COUNT(r.id) desc", nativeQuery = true)
     Page<ThreadEntity> findThreadsByRepliesNumberDescFilterByUserId(Long userId, Pageable pageable);
-    @Query(value = "SELECT * FROM thread WHERE LENGTH(?1) >= 5 AND (title LIKE %?1%)", nativeQuery = true)
+    @Query(value = "SELECT * FROM thread WHERE LENGTH(?1) >= 3 AND (title LIKE %?1%)", nativeQuery = true)
     Page<ThreadEntity> findByTitleContainingIgnoreCase(String searchText, Pageable pageable);
     @Modifying
     @Query(value = "ALTER TABLE thread AUTO_INCREMENT = 1", nativeQuery = true)

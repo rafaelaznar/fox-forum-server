@@ -34,18 +34,26 @@ public class ThreadService {
         return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
     }
 
-    public Page<ThreadEntity> getPage(Pageable pageable, String filter) {
-        oSessionService.onlyAdmins();
-        
-        Page<ThreadEntity> page;
+   public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
+    oSessionService.onlyAdmins();
     
+    Page<ThreadEntity> page;
+
+    if (userId != null && userId != 0) {
         if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-            page = oThreadRepository.findAll(pageable);
+            page = oThreadRepository.findByUserId(userId, oPageable);
         } else {
-            page = oThreadRepository.findByTitleContainingIgnoreCase(filter, pageable);
+            page = oThreadRepository.findByTitleContainingIgnoreCase( filter, oPageable);
         }
-        return page;
+    } else {
+        if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
+            page = oThreadRepository.findAll(oPageable);
+        } else {
+            page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
+        }
     }
+    return page;
+}
     
 
     public Page<ThreadEntity> getPageByRepliesNumberDesc(Pageable oPageable, Long userId) {
