@@ -38,17 +38,20 @@ public class UserApi {
         return ResponseEntity.ok(oUserService.getByUsername(username));
     }
 
-
     @PostMapping("")
-    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {
-        oUserEntity.setToken(UUID.randomUUID().toString()); // genero el token
-        oUserService.sendEmail(oUserEntity); // envio el email
+    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {        
         return ResponseEntity.ok(oUserService.create(oUserEntity));
     }
 
-    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<?> confirmUserAccount(@RequestParam("token")String confirmationToken) {
-        return ResponseEntity.ok(oUserService.confirmCorreo(confirmationToken)) ;
+    @PostMapping("/forusers")
+    public ResponseEntity<Long> createForUsers(@RequestBody UserEntity oUserEntity) {      
+        return ResponseEntity.ok(oUserService.createForUsers(oUserEntity));
+    }
+
+    @RequestMapping(value = "/confirm-account", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken,
+            @RequestParam("password") String password) {
+        return ResponseEntity.ok(oUserService.confirmCorreo(confirmationToken, password));
     }
 
     @PutMapping("")
