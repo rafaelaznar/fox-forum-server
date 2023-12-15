@@ -49,6 +49,17 @@ CREATE TABLE `thread` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
+-- Estructura de tabla para la tabla `captcha`
+--
+
+CREATE TABLE `captcha`(
+  `id` bigint NOT NULL,
+  `text` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
+  `image` longblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
+
+
+-- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `user`
@@ -90,6 +101,13 @@ ALTER TABLE `thread`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `captcha`
+--
+ALTER TABLE `captcha`
+  ADD PRIMARY KEY (`id`);
+
+
+--
 -- Indices de la tabla `user`
 --
 ALTER TABLE `user`
@@ -110,6 +128,12 @@ ALTER TABLE `reply`
 --
 ALTER TABLE `thread`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT de la tabla `captcha`
+--
+ALTER TABLE `captcha`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
