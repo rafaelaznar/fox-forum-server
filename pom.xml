@@ -70,7 +70,13 @@
     		<artifactId>kaptcha</artifactId>
     		<version>0.0.9</version>
 		</dependency>
-	</dependencies>
+	
+   <dependency>
+    <groupId>javax.xml.bind</groupId>
+    <artifactId>jaxb-api</artifactId>
+    <version>2.3.1</version> <!-- Utiliza la versión más reciente -->
+</dependency>
+ </dependencies>
 
 	<build>
 		<plugins>

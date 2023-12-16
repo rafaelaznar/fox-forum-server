@@ -58,6 +58,18 @@ CREATE TABLE `captcha`(
   `image` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
+-- 
+-- Estructura de tabla para la tabla `pendent`
+--
+
+CREATE TABLE `pendent`(
+  `id` bigint NOT NULL,
+  `id_captcha` bigint NOT NULL,
+  `timecode` timestamp NOT NULL,
+  `token` varchar(512) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
+
+--
 
 -- --------------------------------------------------------
 
@@ -106,6 +118,11 @@ ALTER TABLE `thread`
 ALTER TABLE `captcha`
   ADD PRIMARY KEY (`id`);
 
+--
+-- Indices de la tabla `pendent`
+--
+ALTER TABLE `pendent`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `user`
@@ -133,6 +150,12 @@ ALTER TABLE `thread`
 -- AUTO_INCREMENT de la tabla `captcha`
 --
 ALTER TABLE `captcha`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT de la tabla `pendent`
+--
+ALTER TABLE `pendent`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --

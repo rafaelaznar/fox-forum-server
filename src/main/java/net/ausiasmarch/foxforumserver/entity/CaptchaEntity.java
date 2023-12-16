@@ -1,10 +1,15 @@
 package net.ausiasmarch.foxforumserver.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,7 +25,11 @@ public class CaptchaEntity {
     @Lob
     private byte[] image;
 
-    public CaptchaEntity() {
+    @OneToMany(mappedBy = "captcha", fetch = FetchType.LAZY)
+    private List<PendentEntity> pendents;
+
+     public CaptchaEntity() {
+        pendents = new ArrayList<>();
     }
 
     public CaptchaEntity(Long id, String text, byte[] image) {
