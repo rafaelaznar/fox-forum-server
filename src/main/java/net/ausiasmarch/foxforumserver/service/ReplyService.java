@@ -1,6 +1,11 @@
 package net.ausiasmarch.foxforumserver.service;
 
+import java.time.Month;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -100,5 +105,18 @@ public class ReplyService {
         oReplyRepository.flush();
         return oReplyRepository.count();
     }
+    
+    public Map<String, Long> getUserRepliesByMonth(Long userId) {
+        // Obtener el recuento de respuestas por mes para el usuario específico
+        List<Object[]> userRepliesByMonth = oReplyRepository.findRepliesByMonthAndUser(userId);
+        return userRepliesByMonth.stream()
+                .collect(Collectors.toMap(
+                        row -> getMonthName((Integer) row[0]),   // Nombre del mes
+                        row -> (Long) row[1]                    // Cantidad de respuestas
+                ));
+    }
 
+    private String getMonthName(int month) {
+        return Month.of(month).toString();
+    }
 }
