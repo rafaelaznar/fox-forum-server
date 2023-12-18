@@ -15,4 +15,7 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Long> {
     @Modifying
     @Query(value = "ALTER TABLE reply AUTO_INCREMENT = 1", nativeQuery = true)
     void resetAutoIncrement();
+    @Query(value = "SELECT * FROM reply WHERE LENGTH(?1) >= 3 AND (title LIKE %?1% OR body LIKE %?1%)", nativeQuery = true)
+Page<ReplyEntity> findByTitleOrBodyContainingIgnoreCase(String searchText, Pageable pageable);
+
 }

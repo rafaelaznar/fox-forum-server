@@ -37,10 +37,15 @@ public class ReplyService {
         return oReplyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
     }
 
-    public Page<ReplyEntity> getPage(Pageable oPageable, Long userId, Long threadId) {
+    public Page<ReplyEntity> getPage(Pageable oPageable, Long userId, Long threadId, String strFilter) {
         if (userId == 0) {
             if (threadId == 0) {
-                return oReplyRepository.findAll(oPageable);
+                if (strFilter == null || strFilter.isEmpty()) {
+                    return oReplyRepository.findAll(oPageable);
+                } else {
+                    
+                    return oReplyRepository.findByTitleOrBodyContainingIgnoreCase(strFilter, oPageable);
+                }
             } else {
                 return oReplyRepository.findByThreadId(threadId, oPageable);
             }
@@ -48,6 +53,7 @@ public class ReplyService {
             return oReplyRepository.findByUserId(userId, oPageable);
         }
     }
+    
 
     public Long create(ReplyEntity oReplyEntity) {
         oSessionService.onlyAdminsOrUsers();
