@@ -1,5 +1,6 @@
 package net.ausiasmarch.foxforumserver.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +173,12 @@ public class RatingApi {
     public ResponseEntity<Map<Long, Integer>> countRatingsForAllReplies() {
         Map<Long, Integer> countByReplyId = oRatingService.countRatingsForAllReplies();
         return ResponseEntity.ok(countByReplyId);
+    }
+
+    @GetMapping("/allIds")
+    public ResponseEntity<List<RatingEntity>> getAllIds() {
+        List<RatingEntity> allRatings = oRatingService.getAllIds();
+        return new ResponseEntity<>(allRatings, HttpStatus.OK);
     }
 
 }

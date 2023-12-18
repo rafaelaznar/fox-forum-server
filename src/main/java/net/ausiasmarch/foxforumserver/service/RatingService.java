@@ -59,6 +59,10 @@ public class RatingService {
             return oRatingRepository.findAll(pageable);
         }
     }
+    // Devuelve una lista de todas las valoraciones
+    public List<RatingEntity> getAllIds() {
+        return oRatingRepository.findAll(); 
+    }
 
     public Long create(RatingEntity oRatingEntity) {
         oSessionService.onlyAdminsOrUsers();
@@ -76,13 +80,26 @@ public class RatingService {
     }
 
     public RatingEntity update(RatingEntity oRatingEntityToSet) {
+        // Obtener la entidad de calificación existente desde la base de datos
         RatingEntity oRatingEntityFromDatabase = this.get(oRatingEntityToSet.getId());
+        // Verificar si el usuario actual tiene permisos para modificar la calificación
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oRatingEntityFromDatabase.getUser().getId());
-        oRatingEntityToSet.setCreated_at(LocalDateTime.now());
-        if (oSessionService.isUser()) {
-            oRatingEntityToSet.setUser(oSessionService.getSessionUser());
-            return oRatingRepository.save(oRatingEntityToSet);
+        // Obtener el usuario actual de la sesión
+        UserEntity currentUser = oSessionService.getSessionUser();
+        // Verificar si el usuario actual ya ha votado para la respuesta específica
+        Optional<RatingEntity> existingRating = oRatingRepository.findByUserAndReply(currentUser,
+                oRatingEntityToSet.getReply());
+        if (existingRating.isPresent()) {
+            // El usuario ya ha votado, puedes manejarlo según tus requisitos
+            // Por ejemplo, lanzar una excepción, devolver un mensaje de error, etc.
+            // Aquí solo se imprime un mensaje de ejemplo:
+            System.out.println("El usuario ya ha votado para esta respuesta.");
+            return null; // O manejar de acuerdo a tus necesidades
         } else {
+            // Configurar la nueva calificación
+            oRatingEntityToSet.setCreated_at(LocalDateTime.now());
+            oRatingEntityToSet.setUser(currentUser);
+            // Guardar la calificación en el repositorio
             return oRatingRepository.save(oRatingEntityToSet);
         }
     }
@@ -147,11 +164,9 @@ public class RatingService {
     public Map<Long, Double> calculateAverageRatingForAllReplies() {
         // Obtén todas las valoraciones
         List<RatingEntity> allRatings = oRatingRepository.findAll();
-
         // Agrupa las valoraciones por id_reply
         Map<Long, List<RatingEntity>> ratingsByReplyId = allRatings.stream()
                 .collect(Collectors.groupingBy(rating -> rating.getReply().getId()));
-
         // Calcula la media para cada id_reply
         Map<Long, Double> averageRatingsByReplyId = new HashMap<>();
         ratingsByReplyId.forEach((replyId, ratings) -> {
@@ -163,20 +178,23 @@ public class RatingService {
                 averageRatingsByReplyId.put(replyId, averageRating);
             }
         });
-
         return averageRatingsByReplyId;
     }
 
     public Map<Long, Integer> countRatingsForAllReplies() {
         // Obtén todas las valoraciones
         List<RatingEntity> allRatings = oRatingRepository.findAll();
-
         // Agrupa las valoraciones por id_reply y cuenta la cantidad de votos por grupo
         Map<Long, Integer> countByReplyId = allRatings.stream()
                 .collect(
                         Collectors.groupingBy(rating -> rating.getReply().getId(), Collectors.summingInt(rating -> 1)));
-
         return countByReplyId;
+    }
+
+    // Método para obtener las valoraciones asociadas a respuestas específicas
+    public List<RatingEntity> getRatingsByReplyIds(List<Long> replyIds) {
+        return oRatingRepository.findByReplyIdIn(replyIds);
+
     }
 
 }

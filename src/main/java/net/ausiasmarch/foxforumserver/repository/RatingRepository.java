@@ -34,4 +34,8 @@ public interface RatingRepository extends JpaRepository<RatingEntity, Long> {
     void resetAutoIncrement();
 
     List<RatingEntity> findByReplyId(Long replyId);
+
+    List<RatingEntity> findByReplyIdIn(List<Long> replyIds);
+
+    Optional<RatingEntity> findByReplyIdAndUserId(Long replyId, Long userId);
 }
