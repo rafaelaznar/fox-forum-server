@@ -174,6 +174,7 @@ public class SessionService {
                 }
 
                 if (oPendentEntity.getCaptcha().getText().trim().equals(oCaptchaBean.getAnswer().trim())) {
+                    oPendentRepository.delete(oPendentEntity);
                     return JWTHelper.generateJWT(oCaptchaBean.getUsername());
                 } else {
                     throw new UnauthorizedException("Wrong captcha");
