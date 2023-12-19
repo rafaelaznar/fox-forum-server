@@ -1,13 +1,26 @@
 package net.ausiasmarch.foxforumserver.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
+import net.ausiasmarch.foxforumserver.bean.CaptchaBean;
+import net.ausiasmarch.foxforumserver.bean.CaptchaResponseBean;
 import net.ausiasmarch.foxforumserver.bean.UserBean;
+import net.ausiasmarch.foxforumserver.entity.CaptchaEntity;
+import net.ausiasmarch.foxforumserver.entity.PendentEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
 import net.ausiasmarch.foxforumserver.exception.UnauthorizedException;
+import net.ausiasmarch.foxforumserver.helper.DataGenerationHelper;
 import net.ausiasmarch.foxforumserver.helper.JWTHelper;
+import net.ausiasmarch.foxforumserver.repository.CaptchaRepository;
+import net.ausiasmarch.foxforumserver.repository.PendentRepository;
 import net.ausiasmarch.foxforumserver.repository.UserRepository;
 
 @Service
@@ -18,6 +31,15 @@ public class SessionService {
 
     @Autowired
     HttpServletRequest oHttpServletRequest;
+
+    @Autowired
+    CaptchaService oCaptchaService;
+
+    @Autowired
+    PendentRepository oPendentRepository;
+
+    @Autowired
+    CaptchaRepository oCaptchaRepository;
 
     public String login(UserBean oUserBean) {
         String strUsernameOrEmail = oUserBean.getUsername();
@@ -113,5 +135,60 @@ public class SessionService {
             throw new UnauthorizedException("Only admins or users can do this");
         }
     }
+
+    @Transactional
+    public CaptchaResponseBean prelogin() {
+    
+        CaptchaEntity oCaptchaEntity = oCaptchaService.getRandomCaptcha();
+    
+        PendentEntity oPendentEntity = new PendentEntity();
+        oPendentEntity.setCaptcha(oCaptchaEntity);
+        oPendentEntity.setTimecode(LocalDateTime.now());
+        PendentEntity oNewPendentEntity = oPendentRepository.save(oPendentEntity);
+
+        
+        oNewPendentEntity.setToken(DataGenerationHelper.getSHA256(
+            String.valueOf(oNewPendentEntity.getId()) 
+            + String.valueOf(oCaptchaEntity.getId())
+            + String.valueOf(DataGenerationHelper.getRandomInt(0, 9999))));
+       
+
+        oPendentRepository.save(oNewPendentEntity);
+
+        CaptchaResponseBean oCaptchaResponseBean = new CaptchaResponseBean();
+        oCaptchaResponseBean.setToken(oNewPendentEntity.getToken());
+        oCaptchaResponseBean.setCaptchaImage(oNewPendentEntity.getCaptcha().getImage());
+
+        return oCaptchaResponseBean;
+        
+    }
+
+    public String loginCaptcha(@RequestBody CaptchaBean oCaptchaBean) {
+        if (oCaptchaBean.getUsername() != null && oCaptchaBean.getPassword() != null) {
+            UserEntity oUserEntity = oUserRepository.findByUsernameAndPassword(oCaptchaBean.getUsername(), oCaptchaBean.getPassword()).orElseThrow(() -> new ResourceNotFoundException("Wrong User or password"));
+            if (oUserEntity!=null) {
+                PendentEntity oPendentEntity = oPendentRepository.findByToken(oCaptchaBean.getToken()).orElseThrow(() -> new ResourceNotFoundException("Pendent not found"));
+
+                LocalDateTime timecode = oPendentEntity.getTimecode();
+
+                if (LocalDateTime.now().isAfter(timecode.plusSeconds(120))) {
+                    throw new UnauthorizedException("Captcha expired");
+                }
+
+                if (oPendentEntity.getCaptcha().getText().trim().equals(oCaptchaBean.getAnswer().trim())) {
+                    oPendentRepository.delete(oPendentEntity);
+                    return JWTHelper.generateJWT(oCaptchaBean.getUsername());
+                } else {
+                    throw new UnauthorizedException("Wrong captcha");
+                }
+            } else {
+                throw new UnauthorizedException("Wrong User or password");
+            }        
+        } else {
+            throw new UnauthorizedException("User or password not found");
+        }
+    }
+
+
 
 }
