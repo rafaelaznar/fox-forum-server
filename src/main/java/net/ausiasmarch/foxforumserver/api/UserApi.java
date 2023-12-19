@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,8 +66,10 @@ public class UserApi {
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<UserEntity>> getPage(Pageable oPageable) {
-        return ResponseEntity.ok(oUserService.getPage(oPageable));
+    public ResponseEntity<Page<UserEntity>> getPage(
+            Pageable oPageable,
+            @RequestParam(name = "filter", required = false) String strFilter) {
+        return ResponseEntity.ok(oUserService.getPage(oPageable, strFilter));
     }
 
     @PostMapping("/populate/{amount}")

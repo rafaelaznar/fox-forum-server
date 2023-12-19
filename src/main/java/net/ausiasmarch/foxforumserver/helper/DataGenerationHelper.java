@@ -1,13 +1,19 @@
 package net.ausiasmarch.foxforumserver.helper;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import javax.xml.bind.DatatypeConverter;
 
-import org.springframework.data.convert.Jsr310Converters.LocalDateTimeToInstantConverter;
+
+
+import net.ausiasmarch.foxforumserver.exception.CannotPerformOperationException;
 
 public class DataGenerationHelper {
 
@@ -130,5 +136,15 @@ public class DataGenerationHelper {
         long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
         return LocalDate.ofEpochDay(randomDay).atTime(getRandomInt(0, 23), getRandomInt(0, 59), getRandomInt(0, 59));
 
+    }
+
+     public static String getSHA256(String strToHash) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(strToHash.getBytes(StandardCharsets.UTF_8));
+            return DatatypeConverter.printHexBinary(digest).toLowerCase();
+        } catch (NoSuchAlgorithmException ex) {
+            throw new CannotPerformOperationException("no such algorithm: sha256");
+        }
     }
 }

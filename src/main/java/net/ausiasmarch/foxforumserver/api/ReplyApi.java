@@ -1,8 +1,13 @@
 package net.ausiasmarch.foxforumserver.api;
 
+import java.time.Month;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,12 +49,14 @@ public class ReplyApi {
         return ResponseEntity.ok(oReplyService.delete(id));
     }
 
-    @GetMapping("")
-    public ResponseEntity<Page<ReplyEntity>> getPage(Pageable oPageable,
-            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId,
-            @RequestParam(value = "thread", defaultValue = "0", required = false) Long threadId) {
-        return ResponseEntity.ok(oReplyService.getPage(oPageable, userId, threadId));
-    }
+   @GetMapping("")
+public ResponseEntity<Page<ReplyEntity>> getReplyPage(
+        Pageable oPageable,
+        @RequestParam(value = "user", defaultValue = "0", required = false) Long userId,
+        @RequestParam(value = "thread", defaultValue = "0", required = false) Long threadId,
+        @RequestParam(name = "filter", required = false) String strFilter) {
+    return ResponseEntity.ok(oReplyService.getPage(oPageable, userId, threadId, strFilter));
+}
 
     @PostMapping("/populate/{amount}")
     public ResponseEntity<Long> populate(@PathVariable("amount") Integer amount) {
@@ -59,5 +66,14 @@ public class ReplyApi {
     @DeleteMapping("/empty")
     public ResponseEntity<Long> empty() {
         return ResponseEntity.ok(oReplyService.empty());
+    }
+    @GetMapping("/getRepliesByMonth/{userId}")
+    public ResponseEntity<Map<String, Long>> getUserRepliesByMonth(@PathVariable Long userId) {
+        try {
+            Map<String, Long> repliesByMonth = oReplyService.getUserRepliesByMonth(userId);
+            return ResponseEntity.ok(repliesByMonth);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
