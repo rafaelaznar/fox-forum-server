@@ -57,7 +57,7 @@ public class EmailController {
 
       oEmailService.sendEmailTemplate(oEmailValuesDTO);
 
-      return new ResponseEntity("Correo enviado correctamente", HttpStatus.OK);
+      return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @PostMapping("/change-password")
