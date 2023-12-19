@@ -76,7 +76,7 @@ public class EmailController {
       oUserEntity.setTokenPassword(null);
       oUserRepository.save(oUserEntity);
 
-      return new ResponseEntity("Contraseña actualizada correctamente", HttpStatus.OK);
+      return new ResponseEntity(null, HttpStatus.OK);
     
     }
 }
