@@ -35,7 +35,7 @@ public class ThreadService {
     }
 
    public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
-    oSessionService.onlyAdmins();
+    //oSessionService.onlyAdmins();
     
     Page<ThreadEntity> page;
 
