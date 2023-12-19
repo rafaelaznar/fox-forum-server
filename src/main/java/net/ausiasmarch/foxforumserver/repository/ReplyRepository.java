@@ -27,4 +27,8 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Long> {
    "GROUP BY MONTH(r.creation) " +
    "ORDER BY MONTH(r.creation)")
 List<Object[]> findRepliesByMonthAndUser(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM reply WHERE LENGTH(?1) >= 3 AND (title LIKE %?1% OR body LIKE %?1%)", nativeQuery = true)
+Page<ReplyEntity> findByTitleOrBodyContainingIgnoreCase(String searchText, Pageable pageable);
+
 }
