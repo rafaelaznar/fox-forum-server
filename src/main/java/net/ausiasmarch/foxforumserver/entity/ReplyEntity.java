@@ -106,5 +106,12 @@ public class ReplyEntity {
     public void setThread(ThreadEntity thread) {
         this.thread = thread;
     }
-
+    //Added by paula
+    public LocalDateTime getCreation() {
+        return creation;
+    }
+    
+    public void setCreation(LocalDateTime creation) {
+        this.creation = creation;
+    }
 }
