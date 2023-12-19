@@ -1,7 +1,6 @@
 package net.ausiasmarch.foxforumserver.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +41,10 @@ public class SessionService {
     CaptchaRepository oCaptchaRepository;
 
     public String login(UserBean oUserBean) {
-        String strUsernameOrEmail = oUserBean.getUsername();
+        String strUsername = oUserBean.getUsername();
 
-        oUserRepository.findByUsernameOrEmailAndPassword(strUsernameOrEmail, strUsernameOrEmail,oUserBean.getPassword())
-                .orElseThrow(() -> new ResourceNotFoundException("Wrong User or password"));
+        oUserRepository.findByUsernameAndPassword(strUsername,oUserBean.getPassword())
+                .orElseThrow(() -> new ResourceNotFoundException("Wrong User"));
         return JWTHelper.generateJWT(oUserBean.getUsername());
     }
 

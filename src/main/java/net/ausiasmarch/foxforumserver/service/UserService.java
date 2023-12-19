@@ -35,6 +35,16 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by username"));
     }
 
+    public UserEntity getByEmail(String email) {
+        return oUserRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found by email"));
+    }
+
+     public UserEntity getByTokenPassword(String tokenPassword) {
+        return oUserRepository.findByTokenPassword(tokenPassword)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found by token"));
+    }
+
     public Page<UserEntity> getPage(Pageable pageable, String filter) {
         oSessionService.onlyAdmins();
         

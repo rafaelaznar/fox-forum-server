@@ -38,8 +38,8 @@ public class EmailService {
             
             /* Valor del nombre de usuario y jwt token en el mail */
             Map<String, Object> oMapModel = new HashMap<>();
-            oMapModel.put("strUserName", oEmailValuesDTO.getStrUserName());  
-            oMapModel.put("url", strUrlFront + oEmailValuesDTO.getStrToken());
+            oMapModel.put("strUserName", oEmailValuesDTO.getUserName());  
+            oMapModel.put("url", strUrlFront + oEmailValuesDTO.getTokenPassword());
 
             /* Se establece el modelo para el contexto */
             oContext.setVariables(oMapModel);
@@ -48,9 +48,9 @@ public class EmailService {
             String strHtmlText = oTemplateEngine.process("email-template", oContext);
             
             /* Se reemplazan los valores de la plantilla por los valores del modelo */
-            oMimeMessageHelper.setFrom(oEmailValuesDTO.getStrMailFrom());
-            oMimeMessageHelper.setTo(oEmailValuesDTO.getStrMailTo());
-            oMimeMessageHelper.setSubject(oEmailValuesDTO.getStrSubject());
+            oMimeMessageHelper.setFrom(oEmailValuesDTO.getMailFrom());
+            oMimeMessageHelper.setTo(oEmailValuesDTO.getMailTo());
+            oMimeMessageHelper.setSubject(oEmailValuesDTO.getMailSubject());
             oMimeMessageHelper.setText(strHtmlText, true);
 
             /* Se envia el correo */

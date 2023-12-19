@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+import net.ausiasmarch.foxforumserver.dto.ChangePasswordDTO;
 import net.ausiasmarch.foxforumserver.dto.EmailValuesDTO;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.repository.UserRepository;
@@ -37,17 +40,16 @@ public class EmailController {
 
     @PostMapping("/recover-password")
     public ResponseEntity<?> sendEmailTemplate(@RequestBody EmailValuesDTO oEmailValuesDTO) {
-      UserEntity oUserEntity = oUserService.getByUsernameOrEmail(oEmailValuesDTO.getStrMailTo());
+      UserEntity oUserEntity = oUserService.getByEmail(oEmailValuesDTO.getMailTo());
 
-
-      oEmailValuesDTO.setStrMailFrom(strMailFrom);
-      oEmailValuesDTO.setStrMailTo(oUserEntity.getEmail());
-      oEmailValuesDTO.setStrSubject("cambio de contraseña");
-      oEmailValuesDTO.setStrUserName(oUserEntity.getUsername());
+      oEmailValuesDTO.setMailFrom(strMailFrom);
+      oEmailValuesDTO.setMailTo(oUserEntity.getEmail());
+      oEmailValuesDTO.setMailSubject("cambio de contraseña");
+      oEmailValuesDTO.setUserName(oUserEntity.getUsername());
       /*Generamos el token para recuperar contraseña */
       UUID uuid = UUID.randomUUID();
       String strToken = uuid.toString();
-      oEmailValuesDTO.setStrToken(strToken);
+      oEmailValuesDTO.setTokenPassword(strToken);
 
       /* Guardamos el token en la base de datos */
       oUserEntity.setTokenPassword(strToken);
@@ -56,5 +58,25 @@ public class EmailController {
       oEmailService.sendEmailTemplate(oEmailValuesDTO);
 
       return new ResponseEntity("Correo enviado correctamente", HttpStatus.OK);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO oChangePasswordDTO, BindingResult oBindingResult) {
+      if (oBindingResult.hasErrors()) {
+        return new ResponseEntity("Compruebe los campos introducidos", HttpStatus.BAD_REQUEST);
+      }
+
+      if(!oChangePasswordDTO.getPassword().equals(oChangePasswordDTO.getConfirmPassword())) {
+        return new ResponseEntity("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
+      }
+
+      UserEntity oUserEntity = oUserService.getByTokenPassword(oChangePasswordDTO.getTokenPassword());
+      //No acepta contraseñas sin cifrar
+      oUserEntity.setPassword(oChangePasswordDTO.getPassword());
+      oUserEntity.setTokenPassword(null);
+      oUserRepository.save(oUserEntity);
+
+      return new ResponseEntity("Contraseña actualizada correctamente", HttpStatus.OK);
+    
     }
 }

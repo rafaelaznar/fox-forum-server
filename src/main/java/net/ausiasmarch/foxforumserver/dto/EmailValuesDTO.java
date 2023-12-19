@@ -1,61 +1,61 @@
 package net.ausiasmarch.foxforumserver.dto;
 
 public class EmailValuesDTO {
-    private String strMailFrom;
-    private String strMailTo;
-    private String strSubject;
-    private String strUserName;
-    private String strToken;
+    private String mailFrom;
+    private String mailTo;
+    private String mailSubject;
+    private String userName;
+    private String tokenPassword;
 
     public EmailValuesDTO() {
     }
 
-    public EmailValuesDTO(String strMailFrom, String strMailTo, String strSubject, String strUserName, String strToken) {
-        this.strMailFrom = strMailFrom;
-        this.strMailTo = strMailTo;
-        this.strSubject = strSubject;
-        this.strUserName = strUserName;
-        this.strToken = strToken;
+    public EmailValuesDTO(String mailFrom, String mailTo, String mailSubject, String userName, String tokenPassword) {
+        this.mailFrom = mailFrom;
+        this.mailTo = mailTo;
+        this.mailSubject = mailSubject;
+        this.userName = userName;
+        this.tokenPassword = tokenPassword;
     }
     
-    public String getStrMailFrom() {
-        return this.strMailFrom;
+    public String getMailFrom() {
+        return this.mailFrom;
     }
 
-    public void setStrMailFrom(String strMailFrom) {
-        this.strMailFrom = strMailFrom;
+    public void setMailFrom(String mailFrom) {
+        this.mailFrom = mailFrom;
     }
 
-    public String getStrMailTo() {
-        return this.strMailTo;
+    public String getMailTo() {
+        return this.mailTo;
     }
 
-    public void setStrMailTo(String strMailTo) {
-        this.strMailTo = strMailTo;
+    public void setMailTo(String mailTo) {
+        this.mailTo = mailTo;
     }
 
-    public String getStrSubject() {
-        return this.strSubject;
+    public String getMailSubject() {
+        return this.mailSubject;
     }
 
-    public void setStrSubject(String strSubject) {
-        this.strSubject = strSubject;
+    public void setMailSubject(String mailSubject) {
+        this.mailSubject = mailSubject;
     }
 
-    public String getStrUserName() {
-        return this.strUserName;
+    public String getUserName() {
+        return this.userName;
     }
 
-    public void setStrUserName(String strUserName) {
-        this.strUserName = strUserName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getStrToken() {
-        return this.strToken;
+    public String getTokenPassword() {
+        return this.tokenPassword;
     }
 
-    public void setStrToken(String strToken) {
-        this.strToken = strToken;
+    public void setTokenPassword(String tokenPassword) {
+        this.tokenPassword = tokenPassword;
     }
     
 }

@@ -13,8 +13,10 @@ import net.ausiasmarch.foxforumserver.entity.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByUsername(String username);
-  Page<UserEntity> findByNameContaining(String name, Pageable pageable);
+    Page<UserEntity> findByNameContaining(String name, Pageable pageable);
     Optional<UserEntity> findByUsernameAndPassword(String username, String password);
+    Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findByTokenPassword(String tokenPassword);
 
     @Query(value = "SELECT u.*,count(r.id) FROM user u, reply r WHERE u.id = r.id_user GROUP BY u.id ORDER BY COUNT(u.id) desc", nativeQuery = true)
     Page<UserEntity> findUsersByRepliesNumberDescFilter(Pageable pageable);
