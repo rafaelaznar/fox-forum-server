@@ -1,7 +1,11 @@
 package net.ausiasmarch.foxforumserver.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,9 @@ public class UserService {
 
     @Autowired
     SessionService oSessionService;
+
+    @Autowired
+    EmailService oEmailService;
 
     public UserEntity get(Long id) {
         return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -57,17 +64,57 @@ public class UserService {
         oSessionService.onlyAdmins();
         oUserEntity.setId(null);
         oUserEntity.setPassword(foxforumPASSWORD);
-        return oUserRepository.save(oUserEntity).getId();
+        oUserEntity.setToken(UUID.randomUUID().toString()); // genero el token    
+        oUserRepository.save(oUserEntity);
+        this.sendEmail(oUserEntity); // envio el email
+        return oUserEntity.getId();        
+    }
+
+    public Long createForUsers(UserEntity oUserEntity) {
+        oUserEntity.setId(null);
+        oUserEntity.setPassword(foxforumPASSWORD);
+        oUserEntity.setToken(UUID.randomUUID().toString()); // genero el token
+        oUserEntity.setRole(true); // role = true -> user
+        oUserRepository.save(oUserEntity);
+        this.sendEmail(oUserEntity); // envio el email
+        return oUserEntity.getId();
+    }
+
+    /**
+     * Send email to user with token
+     * 
+     * @param user
+     */
+    public void sendEmail(UserEntity user) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setText("To confirm your account, please click here : "
+                + "http://localhost:4200/user/confirm-account?token=" + user.getToken());
+        oEmailService.sendEmail(mailMessage);
+    }
+
+    /*
+     * Confirm email
+     */
+    public ResponseEntity<?> confirmCorreo(String tokenVerificacion, String password) {
+        UserEntity oUser = oUserRepository.findByToken(tokenVerificacion)
+                .orElseThrow(() -> new RuntimeException("Token not found when validatimg token"));
+        oUser.setVerified(true);
+        oUser.setToken(null);
+        oUser.setPassword(password);
+        oUserRepository.save(oUser);
+        return ResponseEntity.ok("Email verified successfully!");
     }
 
     public UserEntity update(UserEntity oUserEntityToSet) {
         UserEntity oUserEntityFromDatabase = this.get(oUserEntityToSet.getId());
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oUserEntityFromDatabase.getId());
-        if (oSessionService.isUser()) {            
+        if (oSessionService.isUser()) {
             oUserEntityToSet.setRole(oUserEntityFromDatabase.getRole());
             oUserEntityToSet.setPassword(foxforumPASSWORD);
             return oUserRepository.save(oUserEntityToSet);
-        } else {            
+        } else {
             oUserEntityToSet.setPassword(foxforumPASSWORD);
             return oUserRepository.save(oUserEntityToSet);
         }
@@ -95,7 +142,8 @@ public class UserService {
                     + "@ausiasmarch.net";
             String username = DataGenerationHelper
                     .doNormalizeString(
-                            name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i).toLowerCase();
+                            name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i)
+                    .toLowerCase();
             oUserRepository.save(new UserEntity(name, surname, lastname, email, username,
                     "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true));
         }

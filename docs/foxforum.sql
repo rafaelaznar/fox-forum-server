@@ -26,6 +26,8 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `captcha`
 --
+create database foxforum;
+use foxforum;
 
 CREATE TABLE `captcha` (
   `id` bigint NOT NULL,
@@ -77,6 +79,8 @@ CREATE TABLE `pendent` (
 -- Estructura de tabla para la tabla `reply`
 --
 
+
+
 CREATE TABLE `reply` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
@@ -112,16 +116,18 @@ CREATE TABLE `user` (
   `email` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `username` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `password` varchar(512) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
-  `role` tinyint(1) NOT NULL
+  `role` tinyint(1) NOT NULL,
+  `verified` tinyint NOT NULL,
+  `token` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `role`) VALUES
-(1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 0),
-(2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 1);
+INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `role`,`verified`,`token`) VALUES
+(1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 0,1,NULL),
+(2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 1,1,NULL);
 
 --
 -- Índices para tablas volcadas
