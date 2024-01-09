@@ -34,27 +34,26 @@ public class ThreadService {
         return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
     }
 
-   public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
-    //oSessionService.onlyAdmins();
-    
-    Page<ThreadEntity> page;
+    public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
+        // oSessionService.onlyAdmins();
 
-    if (userId != null && userId != 0) {
-        if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-            page = oThreadRepository.findByUserId(userId, oPageable);
+        Page<ThreadEntity> page;
+
+        if (userId != null && userId != 0) {
+            if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
+                page = oThreadRepository.findByUserId(userId, oPageable);
+            } else {
+                page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
+            }
         } else {
-            page = oThreadRepository.findByTitleContainingIgnoreCase( filter, oPageable);
+            if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
+                page = oThreadRepository.findAll(oPageable);
+            } else {
+                page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
+            }
         }
-    } else {
-        if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-            page = oThreadRepository.findAll(oPageable);
-        } else {
-            page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
-        }
+        return page;
     }
-    return page;
-}
-    
 
     public Page<ThreadEntity> getPageByRepliesNumberDesc(Pageable oPageable, Long userId) {
         if (userId == 0) {
@@ -64,7 +63,6 @@ public class ThreadService {
         }
     }
 
-
     public Long create(ThreadEntity oThreadEntity) {
         oThreadEntity.setId(null);
         oSessionService.onlyAdminsOrUsers();
@@ -72,6 +70,9 @@ public class ThreadService {
             oThreadEntity.setUser(oSessionService.getSessionUser());
             return oThreadRepository.save(oThreadEntity).getId();
         } else {
+            if (oThreadEntity.getUser() == null) {
+                oThreadEntity.setUser(oSessionService.getSessionUser());
+            }
             return oThreadRepository.save(oThreadEntity).getId();
         }
     }
