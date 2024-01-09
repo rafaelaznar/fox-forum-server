@@ -70,7 +70,7 @@ public class ThreadService {
             oThreadEntity.setUser(oSessionService.getSessionUser());
             return oThreadRepository.save(oThreadEntity).getId();
         } else {
-            if (oThreadEntity.getUser() == null) {
+            if (oThreadEntity.getUser().getId() == 0) {
                 oThreadEntity.setUser(oSessionService.getSessionUser());
             }
             return oThreadRepository.save(oThreadEntity).getId();
