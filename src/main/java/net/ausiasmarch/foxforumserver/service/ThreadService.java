@@ -31,7 +31,12 @@ public class ThreadService {
     SessionService oSessionService;
 
     public ThreadEntity get(Long id) {
-        return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
+        if (oSessionService.isAdmin()) {
+            oSessionService.onlyAdmins();
+            return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
+        } else {
+            return oThreadRepository.findByActiveTrue(id).orElseThrow(() -> new ResourceNotFoundException("Thread not enabled"));
+        }
     }
 
     public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
@@ -47,7 +52,11 @@ public class ThreadService {
             }
         } else {
             if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-                page = oThreadRepository.findAll(oPageable);
+                if (oSessionService.isAdmin()) {
+                    page = oThreadRepository.findAll(oPageable);
+                } else {
+                    page = oThreadRepository.findAllByActiveTrue(oPageable);
+                }
             } else {
                 page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
             }
@@ -57,7 +66,11 @@ public class ThreadService {
 
     public Page<ThreadEntity> getPageByRepliesNumberDesc(Pageable oPageable, Long userId) {
         if (userId == 0) {
-            return oThreadRepository.findThreadsByRepliesNumberDesc(oPageable);
+            if (oSessionService.isAdmin()) {
+                return oThreadRepository.findThreadsByRepliesNumberDesc(oPageable);
+            } else {
+                return oThreadRepository.findThreadsByRepliesNumberDescActiveTrue(oPageable);
+            }
         } else {
             return oThreadRepository.findThreadsByRepliesNumberDescFilterByUserId(userId, oPageable);
         }
@@ -102,7 +115,7 @@ public class ThreadService {
         oSessionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             oThreadRepository
-                    .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), oUserService.getOneRandom()));
+                    .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), true, oUserService.getOneRandom()));
         }
         return oThreadRepository.count();
     }

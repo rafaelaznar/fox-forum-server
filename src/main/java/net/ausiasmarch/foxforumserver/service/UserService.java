@@ -34,7 +34,12 @@ public class UserService {
     EmailService oEmailService;
 
     public UserEntity get(Long id) {
-        return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (oSessionService.isAdmin()) {
+            oSessionService.onlyAdmins();
+            return oUserRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        } else {
+            return oUserRepository.findByActiveTrue(id).orElseThrow(() -> new ResourceNotFoundException("User not enabled"));
+        }        
     }
 
     public UserEntity getByUsername(String username) {
@@ -48,7 +53,11 @@ public class UserService {
         Page<UserEntity> page;
 
         if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-            page = oUserRepository.findAll(pageable);
+            if (oSessionService.isAdmin()) {
+                page = oUserRepository.findAll(pageable);
+            } else {
+                page = oUserRepository.findAllByActiveTrue(pageable);
+            }
         } else {
             page = oUserRepository.findByUserByNameOrSurnameOrLastnameContainingIgnoreCase(
                     filter, filter, filter, filter, pageable);
@@ -57,7 +66,11 @@ public class UserService {
     }
 
     public Page<UserEntity> getPageByRepliesNumberDesc(Pageable oPageable) {
-        return oUserRepository.findUsersByRepliesNumberDescFilter(oPageable);
+        if (oSessionService.isAdmin()) {
+            return oUserRepository.findUsersByRepliesNumberDescFilter(oPageable);
+        } else {
+            return oUserRepository.findUsersByRepliesNumberDescFilterActiveTrue(oPageable);
+        }
     }
 
     public Long create(UserEntity oUserEntity) {
@@ -111,6 +124,7 @@ public class UserService {
         UserEntity oUserEntityFromDatabase = this.get(oUserEntityToSet.getId());
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oUserEntityFromDatabase.getId());
         if (oSessionService.isUser()) {
+            oUserEntityToSet.setActive(oUserEntityFromDatabase.isActive());
             oUserEntityToSet.setRole(oUserEntityFromDatabase.getRole());
             oUserEntityToSet.setPassword(foxforumPASSWORD);
             return oUserRepository.save(oUserEntityToSet);
@@ -145,7 +159,7 @@ public class UserService {
                             name.substring(0, 3) + surname.substring(1, 3) + lastname.substring(1, 2) + i)
                     .toLowerCase();
             oUserRepository.save(new UserEntity(name, surname, lastname, email, username,
-                    "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true));
+                    "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e", true, true));
         }
         return oUserRepository.count();
     }
@@ -158,10 +172,10 @@ public class UserService {
         oUserRepository.deleteAll();
         oUserRepository.resetAutoIncrement();
         UserEntity oUserEntity1 = new UserEntity(1L, "Pedro", "Picapiedra", "Roca",
-                "pedropicapiedra@ausiasmarch.net", "pedropicapiedra", foxforumPASSWORD, false);
+                "pedropicapiedra@ausiasmarch.net", "pedropicapiedra", foxforumPASSWORD, false, true);
         oUserRepository.save(oUserEntity1);
         oUserEntity1 = new UserEntity(2L, "Pablo", "Mármol", "Granito", "pablomarmol@ausiasmarch.net",
-                "pablomarmol", foxforumPASSWORD, true);
+                "pablomarmol", foxforumPASSWORD, true, true);
         oUserRepository.save(oUserEntity1);
         return oUserRepository.count();
     }
