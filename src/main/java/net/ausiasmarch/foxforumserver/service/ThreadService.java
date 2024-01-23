@@ -31,39 +31,50 @@ public class ThreadService {
     SessionService oSessionService;
 
     public ThreadEntity get(Long id) {
-        return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
-    }
-
-   public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
-    oSessionService.onlyAdmins();
-    
-    Page<ThreadEntity> page;
-
-    if (userId != null && userId != 0) {
-        if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-            page = oThreadRepository.findByUserId(userId, oPageable);
+        if (oSessionService.isAdmin()) {
+            oSessionService.onlyAdmins();
+            return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
         } else {
-            page = oThreadRepository.findByTitleContainingIgnoreCase( filter, oPageable);
-        }
-    } else {
-        if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
-            page = oThreadRepository.findAll(oPageable);
-        } else {
-            page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
+            return oThreadRepository.findByActiveTrue(id).orElseThrow(() -> new ResourceNotFoundException("Thread not enabled"));
         }
     }
-    return page;
-}
-    
+
+    public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
+        // oSessionService.onlyAdmins();
+
+        Page<ThreadEntity> page;
+
+        if (userId != null && userId != 0) {
+            if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
+                page = oThreadRepository.findByUserId(userId, oPageable);
+            } else {
+                page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
+            }
+        } else {
+            if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
+                if (oSessionService.isAdmin()) {
+                    page = oThreadRepository.findAll(oPageable);
+                } else {
+                    page = oThreadRepository.findAllByActiveTrue(oPageable);
+                }
+            } else {
+                page = oThreadRepository.findByTitleContainingIgnoreCase(filter, oPageable);
+            }
+        }
+        return page;
+    }
 
     public Page<ThreadEntity> getPageByRepliesNumberDesc(Pageable oPageable, Long userId) {
         if (userId == 0) {
-            return oThreadRepository.findThreadsByRepliesNumberDesc(oPageable);
+            if (oSessionService.isAdmin()) {
+                return oThreadRepository.findThreadsByRepliesNumberDesc(oPageable);
+            } else {
+                return oThreadRepository.findThreadsByRepliesNumberDescActiveTrue(oPageable);
+            }
         } else {
             return oThreadRepository.findThreadsByRepliesNumberDescFilterByUserId(userId, oPageable);
         }
     }
-
 
     public Long create(ThreadEntity oThreadEntity) {
         oThreadEntity.setId(null);
@@ -72,6 +83,9 @@ public class ThreadService {
             oThreadEntity.setUser(oSessionService.getSessionUser());
             return oThreadRepository.save(oThreadEntity).getId();
         } else {
+            if (oThreadEntity.getUser().getId() == 0) {
+                oThreadEntity.setUser(oSessionService.getSessionUser());
+            }
             return oThreadRepository.save(oThreadEntity).getId();
         }
     }
@@ -101,7 +115,7 @@ public class ThreadService {
         oSessionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             oThreadRepository
-                    .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), oUserService.getOneRandom()));
+                    .save(new ThreadEntity(DataGenerationHelper.getSpeech(1), true, oUserService.getOneRandom()));
         }
         return oThreadRepository.count();
     }

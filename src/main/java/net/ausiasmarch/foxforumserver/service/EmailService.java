@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -14,10 +16,10 @@ import org.thymeleaf.context.Context;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import net.ausiasmarch.foxforumserver.dto.EmailValuesDTO;
+    
+   
 
-
-
-@Service
+@Service("emailService")
 public class EmailService {
     
     @Autowired
@@ -28,6 +30,18 @@ public class EmailService {
 
     @Value("${mail.urlFront}")
     private String strUrlFront;
+
+    private JavaMailSender  javaMailSender;
+
+    @Autowired
+    public EmailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
+    @Async
+    public void sendEmail(SimpleMailMessage email) {
+        javaMailSender.send(email);
+    }
 
     public void sendEmailTemplate(EmailValuesDTO oEmailValuesDTO) {
         MimeMessage oMimeMessage = oJavaMailSender.createMimeMessage();

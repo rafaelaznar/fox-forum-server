@@ -26,6 +26,8 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `captcha`
 --
+create database foxforum;
+use foxforum;
 
 CREATE TABLE `captcha` (
   `id` bigint NOT NULL,
@@ -80,13 +82,16 @@ INSERT INTO `pendent` (`id`, `id_captcha`, `timecode`, `token`) VALUES
 -- Estructura de tabla para la tabla `reply`
 --
 
+
+
 CREATE TABLE `reply` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `body` text CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `creation` datetime DEFAULT NULL,
   `id_user` bigint NOT NULL DEFAULT '1',
-  `id_thread` bigint NOT NULL DEFAULT '1'
+  `id_thread` bigint NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
@@ -98,7 +103,8 @@ CREATE TABLE `reply` (
 CREATE TABLE `thread` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
-  `id_user` bigint NOT NULL DEFAULT '1'
+  `id_user` bigint NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
@@ -116,16 +122,19 @@ CREATE TABLE `user` (
   `username` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `password` varchar(512) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `token_password` varchar(256) COLLATE utf16_unicode_ci DEFAULT NULL,
-  `role` tinyint(1) NOT NULL
+  `role` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `verified` tinyint NOT NULL,
+  `token` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `token_password`, `role`) VALUES
-(1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 0),
-(2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 1);
+INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `token_password`, `role`,`verified`,`token`) VALUES
+(1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 0,1,NULL),
+(2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 1,1,NULL);
 
 --
 -- Índices para tablas volcadas
@@ -198,4 +207,4 @@ COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */

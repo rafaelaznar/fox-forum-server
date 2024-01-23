@@ -27,6 +27,8 @@ public class ThreadEntity {
     @Size(max = 2048)
     private String title;
 
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "id_user")
     private UserEntity user;
@@ -38,17 +40,20 @@ public class ThreadEntity {
         replies = new java.util.ArrayList<>();
     }
 
-    public ThreadEntity(Long id, String title) {
+    public ThreadEntity(Long id, String title, Boolean active) {
         this.id = id;
         this.title = title;
+        this.active = active;
     }
 
-    public ThreadEntity(String title) {
+    public ThreadEntity(String title, Boolean active) {
         this.title = title;
+        this.active = active;
     }
 
-    public ThreadEntity(String title, UserEntity user) {
+    public ThreadEntity(String title, Boolean active, UserEntity user) {
         this.title = title;
+        this.active = active;
         this.user = user;
     }
 
@@ -66,6 +71,14 @@ public class ThreadEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UserEntity getUser() {

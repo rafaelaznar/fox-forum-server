@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
@@ -35,12 +36,20 @@ public class UserApi {
         return ResponseEntity.ok(oUserService.getByUsername(username));
     }
 
-
-
-
     @PostMapping("")
-    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {
+    public ResponseEntity<Long> create(@RequestBody UserEntity oUserEntity) {        
         return ResponseEntity.ok(oUserService.create(oUserEntity));
+    }
+
+    @PostMapping("/forusers")
+    public ResponseEntity<Long> createForUsers(@RequestBody UserEntity oUserEntity) {      
+        return ResponseEntity.ok(oUserService.createForUsers(oUserEntity));
+    }
+
+    @RequestMapping(value = "/confirm-account", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken,
+            @RequestParam("password") String password) {
+        return ResponseEntity.ok(oUserService.confirmCorreo(confirmationToken, password));
     }
 
     @PutMapping("")
