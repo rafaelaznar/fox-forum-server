@@ -35,6 +35,8 @@ public class ReplyEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime creation;
 
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "id_user")
     private UserEntity user;
@@ -46,22 +48,25 @@ public class ReplyEntity {
     public ReplyEntity() {
     }
 
-    public ReplyEntity(String title, String body) {
+    public ReplyEntity(String title, String body, Boolean active) {
         this.title = title;
         this.body = body;
+        this.active = active;
         this.creation = LocalDateTime.now();
     }
 
-    public ReplyEntity(Long id, String title, String body) {
+    public ReplyEntity(Long id, String title, String body, Boolean active) {
         this.id = id;
         this.title = title;
         this.body = body;
+        this.active = active;
         this.creation = LocalDateTime.now();
     }
 
-    public ReplyEntity(String title, String body, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
+    public ReplyEntity(String title, String body, Boolean active, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
         this.title = title;
         this.body = body;
+        this.active = active;
         this.creation = creation;
         this.user = user;
         this.thread = thread;
@@ -89,6 +94,14 @@ public class ReplyEntity {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UserEntity getUser() {

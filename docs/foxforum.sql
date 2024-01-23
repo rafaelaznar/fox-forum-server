@@ -87,7 +87,8 @@ CREATE TABLE `reply` (
   `body` text CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `creation` datetime DEFAULT NULL,
   `id_user` bigint NOT NULL DEFAULT '1',
-  `id_thread` bigint NOT NULL DEFAULT '1'
+  `id_thread` bigint NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
@@ -99,7 +100,8 @@ CREATE TABLE `reply` (
 CREATE TABLE `thread` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
-  `id_user` bigint NOT NULL DEFAULT '1'
+  `id_user` bigint NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
@@ -117,6 +119,7 @@ CREATE TABLE `user` (
   `username` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `password` varchar(512) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `role` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `verified` tinyint NOT NULL,
   `token` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
@@ -200,4 +203,4 @@ COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */

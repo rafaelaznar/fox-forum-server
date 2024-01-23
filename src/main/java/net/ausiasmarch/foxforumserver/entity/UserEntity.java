@@ -48,8 +48,10 @@ public class UserEntity {
     @Size(min=64, max=64)
     @Pattern(regexp = "^[a-fA-F0-9]+$", message = "Password must be hexadecimal")
     private String password = "e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e";        
+
     private Boolean role = false;
 
+    private Boolean active = true;
 
     private boolean verified;
 
@@ -67,7 +69,7 @@ public class UserEntity {
     }
 
     public UserEntity(Long id, String name, String surname, String lastname, String email, String username,
-            String password, Boolean role) {
+            String password, Boolean role, Boolean active) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -76,10 +78,11 @@ public class UserEntity {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.active = active;
     }
 
     public UserEntity(String name, String surname, String lastname, String email, String username, String password,
-            Boolean role) {
+            Boolean role, Boolean active) {
         this.name = name;
         this.surname = surname;
         this.lastname = lastname;
@@ -87,6 +90,7 @@ public class UserEntity {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.active = active;
     }
 
 
@@ -157,6 +161,14 @@ public class UserEntity {
 
     public void setRole(Boolean role) {
         this.role = role;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
      public boolean isVerified() {

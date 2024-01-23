@@ -39,7 +39,13 @@ public class ReplyService {
     SessionService oSessionService;
 
     public ReplyEntity get(Long id) {
-        return oReplyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
+        if (oSessionService.isAdmin()) {
+            oSessionService.onlyAdmins();
+            return oReplyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reply not found"));
+        } else {
+            return oReplyRepository.findByActiveTrue(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Reply not enabled"));
+        }
     }
 
     public Page<ReplyEntity> getPage(Pageable oPageable, Long userId, Long threadId, String strFilter) {
@@ -48,17 +54,20 @@ public class ReplyService {
                 if (strFilter == null || strFilter.isEmpty()) {
                     return oReplyRepository.findAll(oPageable);
                 } else {
-                    
+
                     return oReplyRepository.findByTitleOrBodyContainingIgnoreCase(strFilter, oPageable);
                 }
             } else {
-                return oReplyRepository.findByThreadId(threadId, oPageable);
+                if (oSessionService.isAdmin()) {
+                    return oReplyRepository.findByThreadId(threadId, oPageable);
+                } else {
+                    return oReplyRepository.findAllByThreadIdActiveTrue(threadId, oPageable);
+                }
             }
         } else {
             return oReplyRepository.findByUserId(userId, oPageable);
         }
     }
-    
 
     public Long create(ReplyEntity oReplyEntity) {
         oSessionService.onlyAdminsOrUsers();
@@ -96,7 +105,7 @@ public class ReplyService {
         oSessionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             oReplyRepository.save(new ReplyEntity(DataGenerationHelper.getSpeech(1),
-                    DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)),
+                    DataGenerationHelper.getSpeech(ThreadLocalRandom.current().nextInt(5, 25)), true,
                     DataGenerationHelper.getRadomDate(),
                     oUserService.getOneRandom(), oThreadService.getOneRandom()));
         }
@@ -111,14 +120,14 @@ public class ReplyService {
         oReplyRepository.flush();
         return oReplyRepository.count();
     }
-    
+
     public Map<String, Long> getUserRepliesByMonth(Long userId) {
         // Obtener el recuento de respuestas por mes para el usuario específico
         List<Object[]> userRepliesByMonth = oReplyRepository.findRepliesByMonthAndUser(userId);
         return userRepliesByMonth.stream()
                 .collect(Collectors.toMap(
-                        row -> getMonthName((Integer) row[0]),   // Nombre del mes
-                        row -> (Long) row[1]                    // Cantidad de respuestas
+                        row -> getMonthName((Integer) row[0]), // Nombre del mes
+                        row -> (Long) row[1] // Cantidad de respuestas
                 ));
     }
 
