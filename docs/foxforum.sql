@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: database:3306
--- Tiempo de generación: 18-12-2023 a las 08:44:23
+-- Tiempo de generación: 19-12-2023 a las 16:23:57
 -- Versión del servidor: 8.1.0
 -- Versión de PHP: 8.2.11
 
@@ -71,7 +71,10 @@ CREATE TABLE `pendent` (
 -- Volcado de datos para la tabla `pendent`
 --
 
-
+INSERT INTO `pendent` (`id`, `id_captcha`, `timecode`, `token`) VALUES
+(58, 10, '2023-12-19 16:16:00', '4e62b685efff25285b519edf8cd9c7289946ee7dc21937240780dbcd8b632bdf'),
+(60, 3, '2023-12-19 16:16:56', '7b4b1ce907b5eba89098029d877c609b2a8fa90ff308079b99af7bd40a48b756'),
+(61, 9, '2023-12-19 16:17:01', 'a800567be3b8a8aadaa8af5482c955b239972f0dfc8a4e8954749c42e98a74c8');
 
 -- --------------------------------------------------------
 
@@ -118,6 +121,7 @@ CREATE TABLE `user` (
   `email` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `username` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `password` varchar(512) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
+  `token_password` varchar(256) COLLATE utf16_unicode_ci DEFAULT NULL,
   `role` tinyint(1) NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `verified` tinyint NOT NULL,
@@ -128,9 +132,9 @@ CREATE TABLE `user` (
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `role`,`verified`,`token`) VALUES
-(1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 0,1,NULL),
-(2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 1,1,NULL);
+INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `token_password`, `role`,`verified`,`token`) VALUES
+(1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 0,1,NULL),
+(2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 1,1,NULL);
 
 --
 -- Índices para tablas volcadas
