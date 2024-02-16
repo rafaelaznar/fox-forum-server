@@ -81,6 +81,15 @@ public class ReplyService {
         }
     }
 
+    // Otiene el numero de respuestas de un hilo para mostrar en el plist y en la
+    public Page<ReplyEntity> getPageByRatingNumberDesc(Pageable oPageable, Long userId) {
+        if (userId == 0) {
+            return oReplyRepository.findRepliesByRatingNumberDesc(oPageable);
+        } else {
+            return oReplyRepository.findRepliesByRatingNumberDescFilterByUserId(userId, oPageable);
+        }
+    }
+
     public Long create(ReplyEntity oReplyEntity) {
         oSessionService.onlyAdminsOrUsers();
         oReplyEntity.setId(null);

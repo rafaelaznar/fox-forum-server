@@ -24,6 +24,7 @@ import net.ausiasmarch.foxforumserver.service.ReplyService;
 @RestController
 @RequestMapping("/reply")
 public class ReplyApi {
+
     @Autowired
     ReplyService oReplyService;
 
@@ -74,5 +75,11 @@ public class ReplyApi {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/byRatingNumberDesc")
+    public ResponseEntity<Page<ReplyEntity>> getPageByRatingNumberDesc(Pageable oPageable,
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId) {
+        return ResponseEntity.ok(oReplyService.getPageByRatingNumberDesc(oPageable, userId));
     }
 }

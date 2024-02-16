@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import net.ausiasmarch.foxforumserver.entity.RatingEntity;
 import net.ausiasmarch.foxforumserver.entity.ReplyEntity;
-import net.ausiasmarch.foxforumserver.entity.ThreadEntity;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
 import net.ausiasmarch.foxforumserver.exception.ResourceNotFoundException;
 import net.ausiasmarch.foxforumserver.repository.RatingRepository;
@@ -27,43 +26,32 @@ public class RatingService {
 
     @Autowired
     RatingRepository oRatingRepository;
-
     @Autowired
     private UserService oUserService;
-
-    @Autowired
-    private ThreadService oThreadService;
-
     @Autowired
     private ReplyService oReplyService;
-
     @Autowired
     SessionService oSessionService;
-
     @Autowired
     HttpServletRequest oHttpServletRequest;
 
+    // Get a single rating by id
     public RatingEntity get(Long id) {
         return oRatingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Rating not found"));
     }
 
-    public Page<RatingEntity> getPage(Pageable pageable, Long userId, Long threadId, Long replyId) {
-        if (userId != null && userId > 0) {
-            return oRatingRepository.findByUserId(userId, pageable);
-        } else if (threadId != null && threadId > 0) {
-            return oRatingRepository.findByThreadId(threadId, pageable);
-        } else if (replyId != null && replyId > 0) {
-            return oRatingRepository.findByReplyId(replyId, pageable);
-        } else {
-            return oRatingRepository.findAll(pageable);
-        }
-    }
-    // Devuelve una lista de todas las valoraciones
-    public List<RatingEntity> getAllIds() {
-        return oRatingRepository.findAll(); 
+    public Page<RatingEntity> getPage(Pageable oPageable) {
+        oSessionService.onlyAdminsOrUsers();
+        return oRatingRepository.findAll(oPageable);
     }
 
+    // Get all ratings
+    public List<RatingEntity> getAllIds() {
+        return oRatingRepository.findAll();
+    }
+
+    // Create a new rating
     public Long create(RatingEntity oRatingEntity) {
         oSessionService.onlyAdminsOrUsers();
         oRatingEntity.setId(null);
@@ -79,31 +67,19 @@ public class RatingService {
         }
     }
 
+    // Update an existing rating
     public RatingEntity update(RatingEntity oRatingEntityToSet) {
-        // Obtener la entidad de calificación existente desde la base de datos
         RatingEntity oRatingEntityFromDatabase = this.get(oRatingEntityToSet.getId());
-        // Verificar si el usuario actual tiene permisos para modificar la calificación
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oRatingEntityFromDatabase.getUser().getId());
-        // Obtener el usuario actual de la sesión
-        UserEntity currentUser = oSessionService.getSessionUser();
-        // Verificar si el usuario actual ya ha votado para la respuesta específica
-        Optional<RatingEntity> existingRating = oRatingRepository.findByUserAndReply(currentUser,
-                oRatingEntityToSet.getReply());
-        if (existingRating.isPresent()) {
-            // El usuario ya ha votado, puedes manejarlo según tus requisitos
-            // Por ejemplo, lanzar una excepción, devolver un mensaje de error, etc.
-            // Aquí solo se imprime un mensaje de ejemplo:
-            System.out.println("El usuario ya ha votado para esta respuesta.");
-            return null; // O manejar de acuerdo a tus necesidades
+        if (oSessionService.isUser()) {
+            oRatingEntityToSet.setUser(oSessionService.getSessionUser());
+            return oRatingRepository.save(oRatingEntityToSet);
         } else {
-            // Configurar la nueva calificación
-            oRatingEntityToSet.setCreated_at(LocalDateTime.now());
-            oRatingEntityToSet.setUser(currentUser);
-            // Guardar la calificación en el repositorio
             return oRatingRepository.save(oRatingEntityToSet);
         }
     }
 
+    // Delete a rating by id
     public Long delete(Long id) {
         RatingEntity oRatingEntityFromDatabase = this.get(id);
         oSessionService.onlyAdminsOrUsersWithIisOwnData(oRatingEntityFromDatabase.getUser().getId());
@@ -111,19 +87,20 @@ public class RatingService {
         return id;
     }
 
+    // Populate the database with random data
     public Long populate(Integer amount) {
         oSessionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             UserEntity randomUser = oUserService.getOneRandom();
-            ThreadEntity randomThread = oThreadService.getOneRandom();
             ReplyEntity randomReply = oReplyService.getOneRandom();
             int randomStars = ThreadLocalRandom.current().nextInt(1, 6);
             oRatingRepository
-                    .save(new RatingEntity(randomUser, randomThread, randomReply, randomStars, LocalDateTime.now()));
+                    .save(new RatingEntity(randomUser, randomReply, randomStars, LocalDateTime.now()));
         }
         return oRatingRepository.count();
     }
 
+    // Delete all ratings
     @Transactional
     public Long empty() {
         oSessionService.onlyAdmins();
@@ -133,41 +110,36 @@ public class RatingService {
         return oRatingRepository.count();
     }
 
+    // Create a new rating for a reply checking first if there is already a rating
+    // in case of scalation
     @Transactional
     public RatingEntity rateReply(RatingEntity oRatingEntity) {
-        // Verificar si ya existe una valoración del mismo usuario para el mismo hilo o
-        // respuesta
-        Optional<RatingEntity> existingRating;
-
-        if (oRatingEntity.getThread() != null) {
-            existingRating = oRatingRepository.findByUserAndThreadAndReply(
-                    oRatingEntity.getUser(), oRatingEntity.getThread(), oRatingEntity.getReply());
-        } else if (oRatingEntity.getReply() != null) {
-            existingRating = oRatingRepository.findByUserAndReply(oRatingEntity.getUser(), oRatingEntity.getReply());
-        } else {
-            // Manejo de error o lógica adicional si es necesario
-            throw new IllegalArgumentException("Thread or Reply must be provided for rating");
-        }
+        // Comprueba si ya existe una valoración para el usuario de la sesión y el reply
+        Optional<RatingEntity> existingRating = oRatingRepository.findByUserAndReply(
+                oRatingEntity.getUser(), oRatingEntity.getReply());
 
         if (existingRating.isPresent()) {
-            // Si ya existe una valoración, actualiza las estrellas y la fecha de creación
             RatingEntity oldRating = existingRating.get();
             oldRating.setStars(oRatingEntity.getStars());
-            oldRating.setCreated_at(LocalDateTime.now()); // Actualiza la fecha de creación si es necesario
+            oldRating.setCreated_at(LocalDateTime.now());
             return oRatingRepository.save(oldRating);
         } else {
-            // Si no existe una valoración, guarda la nueva valoración
             return oRatingRepository.save(oRatingEntity);
         }
     }
 
+    // Método para calcular la media de valoraciones para todas las respuestas
     public Map<Long, Double> calculateAverageRatingForAllReplies() {
-        // Obtén todas las valoraciones
+        // Obtén todas las valoraciones con findAll
         List<RatingEntity> allRatings = oRatingRepository.findAll();
-        // Agrupa las valoraciones por id_reply
+        // Agrupa las valoraciones por id_reply usando una colleción map
+        // las claves son los IDs y los valores del map los valores de cada valoración
+        // asociada a cada ID
         Map<Long, List<RatingEntity>> ratingsByReplyId = allRatings.stream()
                 .collect(Collectors.groupingBy(rating -> rating.getReply().getId()));
-        // Calcula la media para cada id_reply
+        // Calcula la media para cada id_reply usando el map iterando por cada entrada
+        // con un forEach sumando los valores de los datos guardados en el campo stars y
+        // dividiendo por el número de valoraciones para sacar la media
         Map<Long, Double> averageRatingsByReplyId = new HashMap<>();
         ratingsByReplyId.forEach((replyId, ratings) -> {
             if (!ratings.isEmpty()) {
@@ -178,23 +150,43 @@ public class RatingService {
                 averageRatingsByReplyId.put(replyId, averageRating);
             }
         });
+        // Devuelve un mapa donde las claves son los IDs de respuesta
+        // y los valores son las medias de las valoraciones para esas respuestas
         return averageRatingsByReplyId;
     }
 
+    // Método para contar las valoraciones para todas las respuestas
     public Map<Long, Integer> countRatingsForAllReplies() {
-        // Obtén todas las valoraciones
+        // Obtiene todas las valoraciones con findAll y las guarda en una lista de
+        // objetos ratingEntity
         List<RatingEntity> allRatings = oRatingRepository.findAll();
-        // Agrupa las valoraciones por id_reply y cuenta la cantidad de votos por grupo
+        // Usando map agrupa las valoraciones por id_reply y cuenta la cantidad de votos
+        // por grupo usando una colleción map: las claves son los IDs y los valores del
+        // map los valores de cada valoración
+
+        // .stream() toma la lista y la convierte en un flujo (stream) de elementos
+        // GroupingBy agrupa las valoraciones por el ID y summingInt() suma los valores
+        // de cada valoración usando una función de acumulación aplicada a cada elemento
+
+        // Collectors.summingInt(rating -> 1)
+        // Para cada valoracion se asigna el valor que sirve como constante.
+        // De este modo sumamos esos valores para todos usando la constante
+        // dando como resultado la cantidad total de elementos (cantidad total de
+        // valoraciones para ese ID
+        // reply concreto)
         Map<Long, Integer> countByReplyId = allRatings.stream()
                 .collect(
                         Collectors.groupingBy(rating -> rating.getReply().getId(), Collectors.summingInt(rating -> 1)));
+        // Devuelve un mapa donde las claves son los IDs de respuesta
+        // y los valores son la cantidad de valoraciones para esas respuestas
         return countByReplyId;
     }
 
-    // Método para obtener las valoraciones asociadas a respuestas específicas
-    public List<RatingEntity> getRatingsByReplyIds(List<Long> replyIds) {
-        return oRatingRepository.findByReplyIdIn(replyIds);
-
-    }
+    /*
+     * // Método para obtener las valoraciones asociadas a respuestas específicas
+     * public List<RatingEntity> getRatingsByReplyIds(List<Long> replyIds) {
+     * return oRatingRepository.findByReplyIdIn(replyIds);
+     * }
+     */
 
 }

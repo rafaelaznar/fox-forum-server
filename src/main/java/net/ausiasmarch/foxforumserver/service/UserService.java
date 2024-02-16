@@ -42,6 +42,7 @@ public class UserService {
         }
     }
 
+    // LLamada desde RatingAjaxService - UserAjaxService
     public UserEntity getByUsername(String username) {
         return oUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found by username"));

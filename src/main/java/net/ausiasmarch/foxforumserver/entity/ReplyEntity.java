@@ -1,6 +1,7 @@
 package net.ausiasmarch.foxforumserver.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -45,7 +47,12 @@ public class ReplyEntity {
     @JoinColumn(name = "id_thread")
     private ThreadEntity thread;
 
+    @OneToMany(mappedBy = "reply", fetch = jakarta.persistence.FetchType.LAZY)
+    private List<RatingEntity> ratings;
+
     public ReplyEntity() {
+        ratings = new java.util.ArrayList<>();
+
     }
 
     public ReplyEntity(String title, String body, Boolean active) {
@@ -146,6 +153,20 @@ public class ReplyEntity {
 
     public void setCreation(LocalDateTime creation) {
         this.creation = creation;
+    }
+
+    /*
+     * 
+     * public List<RatingEntity> getRatings() {
+     * return ratings;
+     * }
+     * 
+     * public int getRatingsSize() {
+     * return ratings.size();
+     * }
+     */
+    public int getRatings() {
+        return ratings.size();
     }
 
 }

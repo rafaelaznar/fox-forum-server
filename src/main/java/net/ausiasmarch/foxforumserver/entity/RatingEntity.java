@@ -28,10 +28,6 @@ public class RatingEntity {
     private UserEntity user;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_thread", nullable = false)
-    private ThreadEntity thread;
-
-    @ManyToOne(optional = false)
     @JoinColumn(name = "id_reply", nullable = false)
     private ReplyEntity reply;
 
@@ -46,20 +42,18 @@ public class RatingEntity {
     public RatingEntity() {
     }
 
-    public RatingEntity(Long id, UserEntity user, ThreadEntity thread, ReplyEntity reply, int stars,
+    public RatingEntity(Long id, UserEntity user, ReplyEntity reply, int stars,
             @NotNull LocalDateTime created_at) {
         this.id = id;
         this.user = user;
-        this.thread = thread;
         this.reply = reply;
         this.stars = stars;
         this.created_at = created_at;
     }
 
-    public RatingEntity(UserEntity user, ThreadEntity thread, ReplyEntity reply, int stars,
+    public RatingEntity(UserEntity user, ReplyEntity reply, int stars,
             @NotNull LocalDateTime created_at) {
         this.user = user;
-        this.thread = thread;
         this.reply = reply;
         this.stars = stars;
         this.created_at = created_at;
@@ -79,14 +73,6 @@ public class RatingEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
-    }
-
-    public ThreadEntity getThread() {
-        return thread;
-    }
-
-    public void setThread(ThreadEntity thread) {
-        this.thread = thread;
     }
 
     public ReplyEntity getReply() {

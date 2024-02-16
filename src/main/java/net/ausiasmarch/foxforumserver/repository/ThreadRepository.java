@@ -19,6 +19,7 @@ public interface ThreadRepository extends JpaRepository<ThreadEntity, Long> {
     @Query("SELECT t FROM ThreadEntity t WHERE t.active")
     Page<ThreadEntity> findAllByActiveTrue(Pageable pageable);
 
+    
     Page<ThreadEntity> findByUserId(Long id, Pageable pageable);
 
     @Query(value = "SELECT t.*,count(r.id) FROM thread t, reply r WHERE t.id = r.id_thread GROUP BY t.id ORDER BY COUNT(r.id) desc", nativeQuery = true)
