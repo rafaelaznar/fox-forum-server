@@ -9,8 +9,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.xml.bind.DatatypeConverter;
 
-
-
 import net.ausiasmarch.foxforumserver.exception.CannotPerformOperationException;
 
 public class DataGenerationHelper {
@@ -136,7 +134,7 @@ public class DataGenerationHelper {
 
     }
 
-     public static String getSHA256(String strToHash) {
+    public static String getSHA256(String strToHash) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] digest = md.digest(strToHash.getBytes(StandardCharsets.UTF_8));

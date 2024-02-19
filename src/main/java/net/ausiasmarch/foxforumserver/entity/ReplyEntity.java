@@ -1,6 +1,7 @@
 package net.ausiasmarch.foxforumserver.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -45,7 +47,12 @@ public class ReplyEntity {
     @JoinColumn(name = "id_thread")
     private ThreadEntity thread;
 
+    @OneToMany(mappedBy = "reply", fetch = jakarta.persistence.FetchType.LAZY)
+    private List<RatingEntity> ratings;
+
     public ReplyEntity() {
+        ratings = new java.util.ArrayList<>();
+
     }
 
     public ReplyEntity(String title, String body, Boolean active) {
@@ -63,10 +70,29 @@ public class ReplyEntity {
         this.creation = LocalDateTime.now();
     }
 
-    public ReplyEntity(String title, String body, Boolean active, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
+    public ReplyEntity(String title, String body, Boolean active, LocalDateTime creation, UserEntity user,
+            ThreadEntity thread) {
         this.title = title;
         this.body = body;
         this.active = active;
+    }
+
+    public ReplyEntity(String title, String body) {
+        this.title = title;
+        this.body = body;
+        this.creation = LocalDateTime.now();
+    }
+
+    public ReplyEntity(Long id, String title, String body) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.creation = LocalDateTime.now();
+    }
+
+    public ReplyEntity(String title, String body, LocalDateTime creation, UserEntity user, ThreadEntity thread) {
+        this.title = title;
+        this.body = body;
         this.creation = creation;
         this.user = user;
         this.thread = thread;
@@ -119,12 +145,28 @@ public class ReplyEntity {
     public void setThread(ThreadEntity thread) {
         this.thread = thread;
     }
-    //Added by paula
+
+    // Added by paula
     public LocalDateTime getCreation() {
         return creation;
     }
-    
+
     public void setCreation(LocalDateTime creation) {
         this.creation = creation;
     }
+
+    /*
+     * 
+     * public List<RatingEntity> getRatings() {
+     * return ratings;
+     * }
+     * 
+     * public int getRatingsSize() {
+     * return ratings.size();
+     * }
+     */
+    public int getRatings() {
+        return ratings.size();
+    }
+
 }

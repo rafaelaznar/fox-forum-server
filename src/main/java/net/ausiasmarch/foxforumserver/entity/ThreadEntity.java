@@ -54,6 +54,19 @@ public class ThreadEntity {
     public ThreadEntity(String title, Boolean active, UserEntity user) {
         this.title = title;
         this.active = active;
+    }
+
+    public ThreadEntity(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public ThreadEntity(String title) {
+        this.title = title;
+    }
+
+    public ThreadEntity(String title, UserEntity user) {
+        this.title = title;
         this.user = user;
     }
 

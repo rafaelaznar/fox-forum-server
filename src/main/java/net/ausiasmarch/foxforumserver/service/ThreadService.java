@@ -41,9 +41,7 @@ public class ThreadService {
 
     public Page<ThreadEntity> getPage(Pageable oPageable, String filter, Long userId) {
         // oSessionService.onlyAdmins();
-
         Page<ThreadEntity> page;
-
         if (userId != null && userId != 0) {
             if (filter == null || filter.isEmpty() || filter.trim().isEmpty()) {
                 page = oThreadRepository.findByUserId(userId, oPageable);
@@ -62,6 +60,15 @@ public class ThreadService {
             }
         }
         return page;
+        // return oThreadRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Thread not found"));
+    }
+
+    public Page<ThreadEntity> getPage(Pageable oPageable, Long userId) {
+        if (userId == 0) {
+            return oThreadRepository.findAll(oPageable);
+        } else {
+            return oThreadRepository.findByUserId(userId, oPageable);
+        }
     }
 
     public Page<ThreadEntity> getPageByRepliesNumberDesc(Pageable oPageable, Long userId) {

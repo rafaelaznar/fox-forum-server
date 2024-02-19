@@ -24,6 +24,7 @@ import net.ausiasmarch.foxforumserver.service.ReplyService;
 @RestController
 @RequestMapping("/reply")
 public class ReplyApi {
+
     @Autowired
     ReplyService oReplyService;
 
@@ -47,14 +48,14 @@ public class ReplyApi {
         return ResponseEntity.ok(oReplyService.delete(id));
     }
 
-   @GetMapping("")
-public ResponseEntity<Page<ReplyEntity>> getReplyPage(
-        Pageable oPageable,
-        @RequestParam(value = "user", defaultValue = "0", required = false) Long userId,
-        @RequestParam(value = "thread", defaultValue = "0", required = false) Long threadId,
-        @RequestParam(name = "filter", required = false) String strFilter) {
-    return ResponseEntity.ok(oReplyService.getPage(oPageable, userId, threadId, strFilter));
-}
+    @GetMapping("")
+    public ResponseEntity<Page<ReplyEntity>> getReplyPage(
+            Pageable oPageable,
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId,
+            @RequestParam(value = "thread", defaultValue = "0", required = false) Long threadId,
+            @RequestParam(name = "filter", required = false) String strFilter) {
+        return ResponseEntity.ok(oReplyService.getPage(oPageable, userId, threadId, strFilter));
+    }
 
     @PostMapping("/populate/{amount}")
     public ResponseEntity<Long> populate(@PathVariable("amount") Integer amount) {
@@ -65,6 +66,7 @@ public ResponseEntity<Page<ReplyEntity>> getReplyPage(
     public ResponseEntity<Long> empty() {
         return ResponseEntity.ok(oReplyService.empty());
     }
+
     @GetMapping("/getRepliesByMonth/{userId}")
     public ResponseEntity<Map<String, Long>> getUserRepliesByMonth(@PathVariable Long userId) {
         try {
@@ -73,5 +75,11 @@ public ResponseEntity<Page<ReplyEntity>> getReplyPage(
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/byRatingNumberDesc")
+    public ResponseEntity<Page<ReplyEntity>> getPageByRatingNumberDesc(Pageable oPageable,
+            @RequestParam(value = "user", defaultValue = "0", required = false) Long userId) {
+        return ResponseEntity.ok(oReplyService.getPageByRatingNumberDesc(oPageable, userId));
     }
 }
