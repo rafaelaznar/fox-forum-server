@@ -203,4 +203,12 @@ public class UserService {
         return oUserRepository.count();
     }
 
+    @Transactional
+    public UserEntity updateCoordinates(Long userId, Double latitude, Double longitude) {
+    UserEntity userEntity = this.get(userId);
+    userEntity.setLatitude(latitude);
+    userEntity.setLongitude(longitude);
+    return oUserRepository.save(userEntity);
+}
+
 }

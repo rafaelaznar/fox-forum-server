@@ -84,4 +84,16 @@ public class UserApi {
         return ResponseEntity.ok(oUserService.getPageByRepliesNumberDesc(oPageable));
     }
 
+    @PutMapping("/{id}/coordinates")
+    public ResponseEntity<UserEntity> updateCoordinates(
+        @PathVariable("id") Long id,
+        @RequestBody UserEntity userWithCoordinates) {
+    
+        Double latitude = userWithCoordinates.getLatitude();
+        Double longitude = userWithCoordinates.getLongitude();
+    
+        UserEntity updatedUser = oUserService.updateCoordinates(id, latitude, longitude);
+        return ResponseEntity.ok(updatedUser);
+    }
+
 }

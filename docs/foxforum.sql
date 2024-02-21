@@ -3,11 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: database:3306
-<<<<<<< HEAD
 -- Tiempo de generación: 19-12-2023 a las 16:23:57
-=======
 -- Tiempo de generación: 05-10-2023 a las 19:28:46
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
 -- Versión del servidor: 8.1.0
 -- Versión de PHP: 8.2.11
 
@@ -28,7 +25,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
-<<<<<<< HEAD
 -- Estructura de tabla para la tabla `captcha`
 --
 create database foxforum;
@@ -89,23 +85,18 @@ INSERT INTO `pendent` (`id`, `id_captcha`, `timecode`, `token`) VALUES
 
 
 
-=======
+
 -- Estructura de tabla para la tabla `reply`
 --
-
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
 CREATE TABLE `reply` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `body` text CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `creation` datetime DEFAULT NULL,
   `id_user` bigint NOT NULL DEFAULT '1',
-<<<<<<< HEAD
   `id_thread` bigint NOT NULL DEFAULT '1',
   `active` tinyint(1) NOT NULL DEFAULT '1'
-=======
   `id_thread` bigint NOT NULL DEFAULT '1'
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
@@ -117,12 +108,9 @@ CREATE TABLE `reply` (
 CREATE TABLE `thread` (
   `id` bigint NOT NULL,
   `title` varchar(2048) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
-<<<<<<< HEAD
   `id_user` bigint NOT NULL DEFAULT '1',
   `active` tinyint(1) NOT NULL DEFAULT '1'
-=======
   `id_user` bigint NOT NULL DEFAULT '1'
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 -- --------------------------------------------------------
@@ -139,37 +127,35 @@ CREATE TABLE `user` (
   `email` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `username` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
   `password` varchar(512) CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
-<<<<<<< HEAD
   `token_password` varchar(256) COLLATE utf16_unicode_ci DEFAULT NULL,
   `role` tinyint(1) NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `verified` tinyint NOT NULL,
   `token` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci DEFAULT NULL
-=======
-  `role` tinyint(1) NOT NULL
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
+  `role` tinyint(1) NOT NULL,
+`latitude` decimal(10,8) DEFAULT NULL,
+`longitude` decimal(11,8) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
-<<<<<<< HEAD
 INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `token_password`, `role`,`verified`,`token`) VALUES
 (1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 0,1,NULL),
 (2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', NULL, 1,1,NULL);
-=======
+
 INSERT INTO `user` (`id`, `name`, `surname`, `lastname`, `email`, `username`, `password`, `role`) VALUES
 (1, 'Pedro', 'Picapiedra', 'Roca', 'pedropicapiedra@ausiasmarch.net', 'pedropicapiedra', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 0),
 (2, 'Pablo', 'Mármol', 'Granito', 'pablomarmol@ausiasmarch.net', 'pablomarmol', 'e2cac5c5f7e52ab03441bb70e89726ddbd1f6e5b683dde05fb65e0720290179e', 1);
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
+
 
 --
 -- Índices para tablas volcadas
 --
 
 --
-<<<<<<< HEAD
+
 -- Indices de la tabla `captcha`
 --
 ALTER TABLE `captcha`
@@ -182,8 +168,7 @@ ALTER TABLE `pendent`
   ADD PRIMARY KEY (`id`);
 
 --
-=======
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
+
 -- Indices de la tabla `reply`
 --
 ALTER TABLE `reply`
@@ -206,7 +191,7 @@ ALTER TABLE `user`
 --
 
 --
-<<<<<<< HEAD
+
 -- AUTO_INCREMENT de la tabla `captcha`
 --
 ALTER TABLE `captcha`
@@ -219,8 +204,6 @@ ALTER TABLE `pendent`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
-=======
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
 -- AUTO_INCREMENT de la tabla `reply`
 --
 ALTER TABLE `reply`
@@ -241,8 +224,5 @@ COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-<<<<<<< HEAD
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */
-=======
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
->>>>>>> cf61fae (Stars upgrade pending testing to show rating average)
