@@ -58,6 +58,10 @@ public class UserEntity {
 
     private Boolean role = false;
 
+    private Double latitude;
+    
+    private Double longitude;
+
     @OneToMany(mappedBy = "user", fetch = jakarta.persistence.FetchType.LAZY)
     private List<ThreadEntity> threads;
 
@@ -230,6 +234,22 @@ public class UserEntity {
 
     public int getReplies() {
         return replies.size();
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
 }
