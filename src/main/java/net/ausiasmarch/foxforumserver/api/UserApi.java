@@ -1,8 +1,12 @@
 package net.ausiasmarch.foxforumserver.api;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import net.ausiasmarch.foxforumserver.entity.UserEntity;
+import net.ausiasmarch.foxforumserver.service.FileSystemStorageService;
 import net.ausiasmarch.foxforumserver.service.UserService;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
@@ -25,6 +34,9 @@ public class UserApi {
 
     @Autowired
     UserService oUserService;
+
+     @Autowired
+    private FileSystemStorageService storageService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> get(@PathVariable("id") Long id) {
