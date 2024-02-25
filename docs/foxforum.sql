@@ -134,7 +134,8 @@ CREATE TABLE `user` (
   `token` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci DEFAULT NULL
   `role` tinyint(1) NOT NULL,
 `latitude` decimal(10,8) DEFAULT NULL,
-`longitude` decimal(11,8) DEFAULT NULL
+`longitude` decimal(11,8) DEFAULT NULL,
+   `profile_image_url` varchar(255) CHARACTER SET utf16 COLLATE utf16_unicode_ci DEFAULT 'http://localhost:8083/media/default.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
 
 --
